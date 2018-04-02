@@ -10,7 +10,72 @@
 \author{Ruolan Tang}
 \author{Kai Wang}
 \maketitle
+
+\section{Introduction}
+We want to make a non-photorealistic render. When you import a 3D model or 3D scene in, you can choose to render it in watercolor style or pencil drawing style. If possible, we want to make it real-time and support some other NPR effects as well.
+
+\section{Features}
+\begin{enumerate}
+\item watercolor rendering. Shader programming. \cite{montesdeoca2016art}
+    \begin{itemize}
+	\item Controlled Object-space Effects: color bleeding technique and hand tremors effects.
+	\item Watercolor Reflectance Model and Pigment Turbulence.
+	\item Controlled Image-space Effects: Edge Darkening, Paper Distortion and Granulation.
+    \end{itemize}
+\item pencil rendering. \cite{lee2006real} \cite{praun2001real}
+    \begin{itemize}
+	\item Contour detection and contour shaking.
+	\item Multiple contour drawing effects.
+	\item Pencil texture generation. 
+	\item Pencil texture rotation and 3-way blending.
+	\item Compositing and enhancement.
+    \end{itemize}
+\end{enumerate}
+
+\section{Extensions}
+\begin{enumerate}
+\item Try using some other methods to implement the watercolor/pencil effect.
+\item Try implementing some other stylized NPR effect on our own.
+\item Real-time rendering.
+\end{enumerate}
+
+\section{Timeline}
+1st week (Apr. 7th - 13th): Read paper, build basic framework, set out implementing pencil rendering(finish contour detection and contour shaking).
+
+2nd week (Apr. 14th - 20th): FInish implementing pencil rendering, set out implementing watercolor rendering(finish Controlled Object-space Effects).
+
+3rd week (Apr 21st - 27th): FInish implementing watercolor rendering. Try implementing extension features.
+
+4th week (Apr 28th - May 4th): Debugging, refining. Combine the separate two parts together, make an interface, prepare for presentation.
+
+\section{Division of Labor}
+Kai Wang: Multiple contour drawing effects, Pencil texture generation. Watercolor Reflectance Model and Pigment Turbulence. Support real-time rendering.
+
+Ruolan Tang: Contour detection and contour shaking, Compositing and enhancement. Controlled Object-space Effects. UI. Try implementing other NPR effects.
+
+Tianmu Lan: Import and scene parsing. Pencil texture rotation and 3-way blending. Controlled Image-space Effects. Try implementing other NPR effects.
+
+\section{Skills and Expectation}
+Kai Wang:
+
+Skills: C++
+
+Predict to Acquire: more in depth knowledge about NPR
+
+Ruolan Tang: 
+
+Skills: C++ and basic graphics knowledge. PBR. Basic shader programming.
+
+Predict to acquire: more in depth knowledge about NPR. Advanced shader programming abilities. More practice on paper implementation .
+
+Tianmu Lan:
+
+Skills: C++ and basic shader implementation.
+
+Predict to acquire: more knowledge about shader implementation and more practice on paper implementation .
+
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{main}
 
 \end{document}
+
