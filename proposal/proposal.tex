@@ -19,10 +19,11 @@
 
 \section{Introduction}
 
-We propose to create a non-photorealistic renderer with a watercolor and ink style. \textit{Okami} \cite{Okami} is a good example of a game with such a render style, though we do not aim to replicate it exactly. To achieve such an effect, two different components need to be implemented. The first component handles the watercolor-style fills, and the second component handles the pencil/ink contours. We will explore ways to handle each component, and to combine them into a stylistically coherent renderer.
+We propose to create a real-time non-photorealistic renderer with a watercolor and ink style. \textit{Okami} \cite{Okami} is a good example of a game with such a render style, though we do not aim to replicate it exactly. To achieve such an effect, two different components need to be implemented. The first component handles the watercolor-style fills, and the second component handles the pencil/ink contours. We will explore ways to handle each component, and to combine them into a stylistically coherent renderer. 
 %We want to make a non-photorealistic render. When you import a 3D model or 3D scene in, you can choose to render it in watercolor style or pencil drawing style. If possible, we want to make it real-time and support some other NPR effects as well.
 
 \section{Features}
+Our current plan is to implement the features in Unity, but in general, any engine that provides easy camera control and a good support of shader programming should be suitable for our project.
 \subsection{Watercolor}
 The simplest way to create a watercolor effect will be a cel-shader. However, a lot of additional features can be implemented to improve the results. \cite{montesdeoca2016art} provides a good set of such features, including: 
 \begin{itemize}
@@ -61,7 +62,7 @@ Creating contours with a style of ink/pencil is a much more well studied field. 
 \subsection{Extensions}
 Naturally, combining methods from different works will involve a lot of occasions where we have to modify existing methods, especially if we want to create a final product that is stylistically conherent. These modification will be the major extensions that we attempt to make.
 
-In addition, we might also try to design methods on our own, after experimenting with existing methods. Finally, it would be great if we could make the renderer real-time.
+In addition, we might also try to design methods on our own, after experimenting with existing methods.
 %\begin{enumerate}
 %\item Try using some other methods to implement the watercolor/pencil effect.
 %\item Try implementing some other stylized NPR effect on our own.
@@ -86,7 +87,7 @@ As our proposed project involves many individual components, it would be straigh
 %Tianmu Lan: Import and scene parsing. Pencil texture rotation and 3-way blending. Controlled Image-space Effects. Try implementing other NPR effects.
 %
 \section{Skills and Expectation}
-We all have the necessary knowledge of the programming language to be used (C++, OpenGL) and relevant graphics concepts. We hope to develop a more in depth knowledge of NPR, and improve our skills in reading research papers and designing complex rendering systems.
+We all have some knowledge of shader programming and relevant graphics concepts. In addition, Ruolan is familiar with Unity. We hope to develop more in depth knowledge of NPR, learn to code in the engines we choose (currently Unity), and improve our skills in reading research papers and designing complex rendering systems.
 %Kai Wang:
 %
 %Skills: C++
