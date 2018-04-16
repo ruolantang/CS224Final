@@ -7,7 +7,11 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: test1
+<<<<<<< Updated upstream
   m_Shader: {fileID: 4800000, guid: c3796189820f5a949820ed247849ddbd, type: 3}
+=======
+  m_Shader: {fileID: 4800000, guid: c6910d6072bc5439ca8bea82da876dfa, type: 3}
+>>>>>>> Stashed changes
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -79,13 +83,16 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _Ambient: 0.1
     - _BumpScale: 1
+    - _ColorThreshold: 0.25
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _GradThresh: 0.0064
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -94,7 +101,11 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+<<<<<<< Updated upstream
     - _TileFactor: 2.5
+=======
+    - _Treshold: 5
+>>>>>>> Stashed changes
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:

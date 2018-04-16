@@ -7,6 +7,7 @@ Shader "Custom/test" {
         _Color("Main Color",color)=(1,1,1,1)  
     }  
     SubShader {  
+
         pass{  
         Tags{"LightMode"="ForwardBase" }  
         Cull off  
