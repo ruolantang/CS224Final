@@ -50,7 +50,7 @@ Shader "Unlit/waterColor"
 				//hand tremor
 				float s = 1.0f;//speed
 				float f = 2000.0f;//frequency
-				float t = 0.015f;//tremor amount
+				float t = 0.001f;//tremor amount
 				float Pp = 1.0f;//pixel size of projection space
 				float a = 0.5f;
 				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;

@@ -65,8 +65,10 @@
      <None Include="Assets\shader\waterPost.shader" />
      <None Include="Assets\shader\cameraPost.shader" />
      <None Include="Assets\shader\edgeDetect.shader" />
+     <None Include="Assets\Fruit Pack\Shaders\ToonLitTransparent.shader" />
      <None Include="Assets\UnityChan\license.txt" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_fuku_ds.shader" />
+     <None Include="Assets\Fruit Pack\Shaders\ToonLit.shader" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eye_blend.shader" />
      <None Include="Assets\shader\pencil.shader" />
      <None Include="Assets\shader\waterColor.shader" />
