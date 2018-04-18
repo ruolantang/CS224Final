@@ -34,6 +34,7 @@ Shader "Unlit/waterColor"
 				float3 worldNormal : TEXCOORD1;
 				float3 worldPos : TEXCOORD2;
 				float3 viewDir : TEXCOORD3;
+				float turbulence: TEXCOORD4;
 			};
 
 			#include "Lighting.cginc"
@@ -60,6 +61,7 @@ Shader "Unlit/waterColor"
 
 				//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
 
+				o.turbulence = 0.5 + pow(sin(_Time * s + o.vertex * 1000)*0.72, 7);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				o.vertex = UnityObjectToClipPos(o.vertex);
 				o.worldNormal = UnityObjectToWorldNormal(v.normal);
@@ -92,14 +94,16 @@ Shader "Unlit/waterColor"
 
 				//Pigment Turbulence
 				float f = 1.f;
-				float Ctrl = (sin(i.vertex.x * f)+1) / 4 + (cos(i.vertex.y * f) + 1) / 4;
+				float Ctrl = i.turbulence;
 				float3 Ct;
 				if(Ctrl < 0.5){
-					Ct = pow(C, 3-(Ctrl*4));	
+					Ct = pow(Cd, 3-(Ctrl*4));	
 				} else{
-					Ct = (Ctrl - 0.5) * 2 * (Cp - C) + C;
+					Ct = (Ctrl - 0.5) * 2 * (Cp - Cd) + Cd;
 				}
 
+				//Cd = Cd + (Cp - Cd) * Ct;
+				Cd = Ct;
 				//Edge
 				float normal_dot_dir = abs(dot(worldNormal, viewDir));
 				if(normal_dot_dir < 0.40){
