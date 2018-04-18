@@ -101,8 +101,9 @@ Shader "Unlit/waterColor"
 				}
 
 				//Edge
-				if(abs(dot(worldNormal, viewDir)) < 0.25){
-					Cd = float3(0,0,0);
+				float normal_dot_dir = abs(dot(worldNormal, viewDir));
+				if(normal_dot_dir < 0.40){
+					Cd = Cd * max(normal_dot_dir-0.15,0) * 4;
 				}
 		
 				return fixed4(Cd,0);
