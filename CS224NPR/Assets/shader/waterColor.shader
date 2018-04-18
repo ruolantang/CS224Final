@@ -33,7 +33,7 @@ Shader "Unlit/waterColor"
 				float4 vertex : SV_POSITION;
 				float3 worldNormal : TEXCOORD1;
 				float3 worldPos : TEXCOORD2;
-				//float3 viewDir : TEXCOORD2;
+				float3 viewDir : TEXCOORD3;
 			};
 
 			#include "Lighting.cginc"
@@ -50,7 +50,7 @@ Shader "Unlit/waterColor"
 				//hand tremor
 				float s = 1.0f;//speed
 				float f = 2000.0f;//frequency
-				float t = 0.001f;//tremor amount
+				float t = 0.01f;//tremor amount
 				float Pp = 1.0f;//pixel size of projection space
 				float a = 0.5f;
 				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
@@ -64,6 +64,7 @@ Shader "Unlit/waterColor"
 				o.vertex = UnityObjectToClipPos(o.vertex);
 				o.worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+				o.viewDir = viewDir;
 				return o;
 			}
 			
@@ -71,6 +72,7 @@ Shader "Unlit/waterColor"
 			{
 				fixed3 worldNormal = normalize(i.worldNormal);
 				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+				float3 viewDir = normalize(i.viewDir);
 
 				fixed4 texColor = tex2D(_MainTex, i.uv);
 				fixed3 albedo = texColor.rgb * _Color.rgb;
@@ -89,15 +91,20 @@ Shader "Unlit/waterColor"
 				float3 Cd = d * DA * (Cp - Cc) + Cc;
 
 				//Pigment Turbulence
-//				float f = 1.f;
-//				float Ctrl = (sin(i.vertex.x * f)+1) / 4 + (cos(i.vertex.y * f) + 1) / 4;
-//				float3 Ct;
-//				if(Ctrl < 0.5){
-//					Ct = pow(C, 3-(Ctrl*4));	
-//				} else{
-//					Ct = (Ctrl - 0.5) * 2 * (Cp - C) + C;
-//				}
+				float f = 1.f;
+				float Ctrl = (sin(i.vertex.x * f)+1) / 4 + (cos(i.vertex.y * f) + 1) / 4;
+				float3 Ct;
+				if(Ctrl < 0.5){
+					Ct = pow(C, 3-(Ctrl*4));	
+				} else{
+					Ct = (Ctrl - 0.5) * 2 * (Cp - C) + C;
+				}
 
+				//Edge
+				if(abs(dot(worldNormal, viewDir)) < 0.25){
+					Cd = float3(0,0,0);
+				}
+		
 				return fixed4(Cd,0);
 			}
 			ENDCG
