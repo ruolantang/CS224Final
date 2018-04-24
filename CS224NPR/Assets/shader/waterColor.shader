@@ -51,7 +51,7 @@ Shader "Unlit/waterColor"
 		float3 norm_normal = normalize(v.normal);
 		float3 norm_viewDir = normalize(viewDir);
 		o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
-		//o.vertex += float4(norm_normal*0.1, 0);
+		o.vertex += float4(norm_normal*0.1, 0);
 
 		o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 		o.vertex = UnityObjectToClipPos(o.vertex);
@@ -228,7 +228,7 @@ Shader "Unlit/waterColor"
 			"_BlurTexture"
 		}
 		
-
+		/*
 		//Edge darkening pass		
 		Pass
 		{
@@ -286,82 +286,90 @@ Shader "Unlit/waterColor"
 			}
 			ENDCG
 		}
-		
+		*/
 
+		Pass
+		{
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			
+			#include "UnityCG.cginc"
 
+			struct appdata
+			{
+				float4 vertex : POSITION;
+				float2 uv : TEXCOORD0;
+				float3 normal : NORMAL;
+			};
 
+			struct v2f
+			{
+				float2 uv : TEXCOORD0;
+				float4 vertex : SV_POSITION;
+				float3 worldNormal : TEXCOORD1;
+				float3 worldPos : TEXCOORD2;
+				float3 viewDir : TEXCOORD3;
+				float turbulence: TEXCOORD4;
+				float4 grabPos : TEXCOORD5;
+			};
+			/*
+			#include "Lighting.cginc"
+			fixed4 _Color;
+			sampler2D _MainTex;
+			float4 _MainTex_ST;*/
+			sampler2D _PaintTex;
+			float4 _PaintTex_ST;
+			
+			v2f vert (appdata v)
+			{
+				v2f o;
+				o.vertex = v.vertex;
+				//o.vertex = mul(unity_ObjectToWorld, o.vertex);
+				float3 viewDir = WorldSpaceViewDir(v.vertex);
 
-			//     Pass
-			//     {
-			//         CGPROGRAM
-			//         #pragma vertex vert
-			//         #pragma fragment frag
-			//         #include "UnityCG.cginc"
+				//hand tremor
+				float s = 1.0f;//speed
+				float f = 2000.0f;//frequency
+				float t = 0.01f;//tremor amount
+				float Pp = 1.0f;//pixel size of projection space
+				float a = 0.5f;
+				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
+				float3 norm_normal = normalize(v.normal);
+				float3 norm_viewDir = normalize(viewDir);
+				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
+				o.vertex += float4(norm_normal*0.2, 0);
+				//o.vertex += v0;
+				//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
 
-			//struct appdata
-			//{
-			//	float4 vertex : POSITION;
-			//	float2 uv : TEXCOORD0;
-			//	float3 normal : NORMAL;
-			//};
+				o.turbulence = 0.5 + pow(sin(_Time * s + o.vertex * 1000)*0.72, 7);
+				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				o.vertex = UnityObjectToClipPos(o.vertex);
+				o.worldNormal = UnityObjectToWorldNormal(v.normal);
+				o.worldPos = o.vertex.xyz;
+				//o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+				o.viewDir = viewDir;
+				o.grabPos = ComputeGrabScreenPos(o.vertex);
+				return o;
+			}
 
-			//         struct v2f
-			//         {
-			//	float2 uv : TEXCOORD0;
-			//	float4 vertex : SV_POSITION;
-			//	float3 worldNormal : TEXCOORD1;
-			//	float3 worldPos : TEXCOORD2;
-			//	float3 viewDir : TEXCOORD3;
-			//	float turbulence: TEXCOORD4;
-			//             float4 grabPos : TEXCOORD5;
-			//         };
+			sampler2D _BackgroundTexture;
+			sampler2D _BlurTexture;
+			
+			fixed4 frag (v2f i) : SV_Target
+			{
+				fixed3 worldNormal = normalize(i.worldNormal);
+				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+				float3 viewDir = normalize(i.viewDir);
 
-			//#include "Lighting.cginc"
-			//fixed4 _Color;
-			//sampler2D _MainTex;
-			//float4 _MainTex_ST;
-			//
-			//         v2f vert(appdata v) {
-			//	v2f o;
-			//	o.vertex = v.vertex;
-			//	float3 viewDir = WorldSpaceViewDir(v.vertex);
+				fixed4 texColor = tex2D(_PaintTex, i.uv);
+				fixed4 bgColor = tex2Dproj(_BackgroundTexture, i.grabPos);
+				fixed4 blurColor = tex2Dproj(_BlurTexture, i.grabPos);
 
-			//	//hand tremor
-			//	float s = 1.0f;//speed
-			//	float f = 2000.0f;//frequency
-			//	float t = 0.01f;//tremor amount
-			//	float Pp = 1.0f;//pixel size of projection space
-			//	float a = 0.5f;
-			//	float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
-			//	float3 norm_normal = normalize(v.normal);
-			//	float3 norm_viewDir = normalize(viewDir);
-			//	o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
-			//	o.vertex += float4(norm_normal*0.1, 0);
-			//	//o.vertex += v0;
-
-			//	//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
-
-			//	o.turbulence = 0.5 + pow(sin(_Time * s + o.vertex * 1000)*0.72, 7);
-			//	o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-			//	o.vertex = UnityObjectToClipPos(o.vertex);
-			//	o.worldNormal = UnityObjectToWorldNormal(v.normal);
-			//	o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-			//	o.viewDir = viewDir;
-
-			//             // use ComputeGrabScreenPos function from UnityCG.cginc
-			//             // to get the correct texture coordinate
-			//             o.grabPos = ComputeGrabScreenPos(o.vertex);
-			//             return o;
-			//         }
-
-			//         sampler2D _BackgroundTexture;
-
-			//         half4 frag(v2f i) : SV_Target
-			//         {
-			//             half4 bgcolor = tex2Dproj(_BackgroundTexture, i.grabPos);
-			//             return bgcolor*1;
-			//         }
-			//         ENDCG
-			//     }
+				return bgColor + (blurColor-bgColor) * texColor[0];
+				//return bgColor;
+			}
+			ENDCG
+		}//end of pass
 	}
 }

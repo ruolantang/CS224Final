@@ -55,7 +55,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PaperTex:
-        m_Texture: {fileID: 2800000, guid: 8884713c88adc7b45bd33fe0971f85a9, type: 3}
+        m_Texture: {fileID: 2800000, guid: 337a1706bda0b45d5bdb8e622e39a49c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -79,7 +79,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _bluramount: 0
+    - _bluramount: 0.005
     - _sigma: 6.4
     - _size: 10
     m_Colors:
