@@ -4,11 +4,12 @@ Shader "Unlit/waterColor"
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+		_MainTex ("Main Texture", 2D) = "white" {}
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_size ("blurSize", int) = 10
 		_sigma("sigma", float) = 20.0
 		_bluramount("blurAmount", float) = 0.0005
+		_PaintTex ("Paint Texture", 2D) = "white" {}
 	}
 	SubShader
 	{
@@ -44,6 +45,8 @@ Shader "Unlit/waterColor"
 			fixed4 _Color;
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+			sampler2D _PaintTex;
+			float4 _PaintTex_ST;
 			
 			v2f vert (appdata v)
 			{
