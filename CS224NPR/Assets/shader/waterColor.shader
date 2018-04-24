@@ -51,7 +51,7 @@ Shader "Unlit/waterColor"
 		float3 norm_normal = normalize(v.normal);
 		float3 norm_viewDir = normalize(viewDir);
 		o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
-		o.vertex += float4(norm_normal*0.1, 0);
+		o.vertex += float4(norm_normal*0.2, 0);
 
 		o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 		o.vertex = UnityObjectToClipPos(o.vertex);
@@ -234,37 +234,6 @@ Shader "Unlit/waterColor"
 			"_BlurTexture"
 		}
 		
-		/*
-		//Edge darkening pass		
-		Pass
-		{
-			CGPROGRAM
-			#pragma vertex vertA
-			#pragma fragment frag
-			#include "UnityCG.cginc"
-			sampler2D _ColorTexture;
-			sampler2D _BlurTexture;
-			sampler2D _PaintTex;
-			float4 _PaintTex_ST;
-
-			half4 frag(v2fA i) : SV_Target
-			{
-				half4 bgcolor = tex2Dproj(_ColorTexture, i.grabPos);
-				half4 blurcolor = tex2Dproj(_BlurTexture, i.grabPos);
-				fixed4 ctrlImg = tex2D(_PaintTex, i.uv);
-				half4 minusColor = blurcolor - bgcolor;
-				half4 icb = ctrlImg.z*(blurcolor - bgcolor) + bgcolor;
-				half4 ied = pow(icb, 1 + ctrlImg.z * max(max(minusColor.r, minusColor.g), minusColor.b));
-				return ied;
-			}
-			ENDCG
-		}
-				
-		GrabPass
-		{
-			"_EndTexture"
-		}
-
 		// Paper Granulation
 		Pass
 		{
@@ -292,7 +261,12 @@ Shader "Unlit/waterColor"
 			}
 			ENDCG
 		}
-		*/
+		
+
+		GrabPass
+		{
+			"_PaperTexture"
+		}
 
 		Pass
 		{
@@ -362,6 +336,7 @@ Shader "Unlit/waterColor"
 			sampler2D _BackgroundTexture;
 			sampler2D _ColorTexture;
 			sampler2D _BlurTexture;
+			sampler2D _PaperTexture;
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
@@ -373,9 +348,15 @@ Shader "Unlit/waterColor"
 				fixed4 bg = tex2Dproj(_BackgroundTexture, i.grabPos);
 				fixed4 color = tex2Dproj(_ColorTexture, i.grabPos);
 				fixed4 blur = tex2Dproj(_BlurTexture, i.grabPos);
+				fixed4 paper = tex2Dproj(_PaperTexture, i.grabPos);
 
 				float4 c = color + (blur-color) * control[0];
-				return c + bg * (1-c[3]);
+
+				float4 Icb = color + (blur-color) * control[0];
+				float4 diff = blur - color;
+				float4 Ied = pow(Icb, 1 + control[1]*max(max(diff.x,diff.y),diff.z));
+				//return c + (bg+paper) * (1-c[3]);
+				return Ied;
 			}
 			ENDCG
 		}//end of pass
