@@ -147,7 +147,7 @@ Shader "Unlit/waterColor"
 
 				//Watercolor Reflectance Model
 				float da = 1.0f;//dilute area variable
-				float DA = (dot(worldNormal, worldLightDir) + (da-1))/da;  //the area of effect
+				float DA = (max(0,dot(worldNormal, worldLightDir)) + (da-1))/da;  //the area of effect
 				float c = 0.7f;
 				float d = 0.8f;
 				float3 Cp = float3(0.95,0.95,0.85);
@@ -165,8 +165,8 @@ Shader "Unlit/waterColor"
 					Ct = (Ctrl - 0.5) * 2 * (Cp - Cd) + Cd;
 				}
 
-				//Cd = Cd + (Cp - Cd) * Ct;
-				Cd = Ct;
+				Cd = Cd + (Cp - Cd) * Ct;
+				//Cd = max(0,Ct);
 				//Edge
 				float normal_dot_dir = abs(dot(worldNormal, viewDir));
 				if(normal_dot_dir < 0.40){
@@ -227,7 +227,7 @@ Shader "Unlit/waterColor"
 		{
 			"_BlurTexture"
 		}
-
+		
 
 		//Edge darkening pass		
 		Pass
@@ -278,13 +278,15 @@ Shader "Unlit/waterColor"
 				fixed4 paperIv = half4(1, 1, 1, 1) - tex2D(_PaperTex, i.uv);
 				float density = 0.5;
 
-				float saturation = pow(bgcolor.x * bgcolor.x + bgcolor.y * bgcolor.y + bgcolor.z * bgcolor.z, 0.5);
+				//float saturation = pow(bgcolor.x * bgcolor.x + bgcolor.y * bgcolor.y + bgcolor.z * bgcolor.z, 0.5);
+				float saturation = pow(dot(bgcolor.xyz, bgcolor.xyz), 0.5);
 				float saturationPaper = pow(paperIv.x * paperIv.x + paperIv.y * paperIv.y + paperIv.z * paperIv.z, 0.5);
 				half4 ig = bgcolor*(saturation - saturationPaper) + (half4(1, 1, 1, 1) - bgcolor)*pow(saturation, 1 + ctrlImg.y * saturationPaper * density);
 				return ig;
 			}
 			ENDCG
 		}
+		
 
 
 
