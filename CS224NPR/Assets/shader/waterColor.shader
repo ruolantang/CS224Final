@@ -65,8 +65,13 @@ Shader "Unlit/waterColor"
 
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" }
+		Tags {"Queue"="Transparent" "RenderType"="Transparent" }
 		LOD 100
+
+		GrabPass
+        {
+            "_BackgroundTexture"
+        }
 
 		Pass
 		{
@@ -174,14 +179,14 @@ Shader "Unlit/waterColor"
 					//Cd = float3(0,0,0);
 				}
 		
-				return fixed4(Cd,0);
+				return fixed4(Cd,1);
 			}
 			ENDCG
 		}//end of pass
 
 		GrabPass
         {
-            "_BackgroundTexture"
+            "_ColorTexture"
         }
 
 		//Blur Pass
@@ -192,7 +197,7 @@ Shader "Unlit/waterColor"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-			sampler2D _BackgroundTexture;
+			sampler2D _ColorTexture;
 			int _size;
 			float _sigma;
 			float _bluramount;
@@ -212,12 +217,12 @@ Shader "Unlit/waterColor"
 						//float pdf = sigma;
 						float pdf1 = 0.39894*exp(-0.5*dis1 / (sigma*sigma)) / sigma;
 						float pdf2 = 0.39894*exp(-0.5*dis2 / (sigma*sigma)) / sigma;
-						bgcolor += pdf1*pdf2 * tex2Dproj(_BackgroundTexture, UNITY_PROJ_COORD(float4(i.grabPos.x + itx*bluramount, i.grabPos.y + ity*bluramount, i.grabPos.z, i.grabPos.w)));
+						bgcolor += pdf1*pdf2 * tex2Dproj(_ColorTexture, UNITY_PROJ_COORD(float4(i.grabPos.x + itx*bluramount, i.grabPos.y + ity*bluramount, i.grabPos.z, i.grabPos.w)));
 					}
 
 				}
 				//fixed4 noise = tex2D(_PaintTex, i.uv);
-               // bgcolor = tex2Dproj(_BackgroundTexture, i.uv);
+               // bgcolor = tex2Dproj(_ColorTexture, i.uv);
                 return bgcolor;
             }
             ENDCG
@@ -236,14 +241,14 @@ Shader "Unlit/waterColor"
 			#pragma vertex vertA
 			#pragma fragment frag
 			#include "UnityCG.cginc"
-			sampler2D _BackgroundTexture;
+			sampler2D _ColorTexture;
 			sampler2D _BlurTexture;
 			sampler2D _PaintTex;
 			float4 _PaintTex_ST;
 
 			half4 frag(v2fA i) : SV_Target
 			{
-				half4 bgcolor = tex2Dproj(_BackgroundTexture, i.grabPos);
+				half4 bgcolor = tex2Dproj(_ColorTexture, i.grabPos);
 				half4 blurcolor = tex2Dproj(_BlurTexture, i.grabPos);
 				fixed4 ctrlImg = tex2D(_PaintTex, i.uv);
 				half4 minusColor = blurcolor - bgcolor;
@@ -266,14 +271,14 @@ Shader "Unlit/waterColor"
 			#pragma vertex vertA
 			#pragma fragment frag
 			#include "UnityCG.cginc"
-			sampler2D _BackgroundTexture;
+			sampler2D _ColorTexture;
 			sampler2D _PaintTex;
 			sampler2D _PaperTex;
 			float4 _PaintTex_ST;
 
 			half4 frag(v2fA i) : SV_Target
 			{
-				half4 bgcolor = tex2Dproj(_BackgroundTexture, i.grabPos);
+				half4 bgcolor = tex2Dproj(_ColorTexture, i.grabPos);
 				fixed4 ctrlImg = tex2D(_PaintTex, i.uv);
 				fixed4 paperIv = half4(1, 1, 1, 1) - tex2D(_PaperTex, i.uv);
 				float density = 0.5;
@@ -354,6 +359,7 @@ Shader "Unlit/waterColor"
 			}
 
 			sampler2D _BackgroundTexture;
+			sampler2D _ColorTexture;
 			sampler2D _BlurTexture;
 			
 			fixed4 frag (v2f i) : SV_Target
@@ -362,12 +368,13 @@ Shader "Unlit/waterColor"
 				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
 				float3 viewDir = normalize(i.viewDir);
 
-				fixed4 texColor = tex2D(_PaintTex, i.uv);
-				fixed4 bgColor = tex2Dproj(_BackgroundTexture, i.grabPos);
-				fixed4 blurColor = tex2Dproj(_BlurTexture, i.grabPos);
+				fixed4 control = tex2D(_PaintTex, i.uv);
+				fixed4 bg = tex2Dproj(_BackgroundTexture, i.grabPos);
+				fixed4 color = tex2Dproj(_ColorTexture, i.grabPos);
+				fixed4 blur = tex2Dproj(_BlurTexture, i.grabPos);
 
-				return bgColor + (blurColor-bgColor) * texColor[0];
-				//return bgColor;
+				//return fixed4(0.5,0.5,0.5,1);
+				return color + (blur-color) * control[0];
 			}
 			ENDCG
 		}//end of pass
