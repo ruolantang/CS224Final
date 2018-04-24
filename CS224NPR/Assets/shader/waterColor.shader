@@ -102,6 +102,7 @@ Shader "Unlit/waterColor"
 
 				//Pigment Turbulence
 				float f = 1.f;
+				fixed4 noise = tex2D(_PaintTex, i.uv);
 				float Ctrl = i.turbulence;
 				float3 Ct;
 				if(Ctrl < 0.5){
@@ -115,7 +116,7 @@ Shader "Unlit/waterColor"
 				//Edge
 				float normal_dot_dir = abs(dot(worldNormal, viewDir));
 				if(normal_dot_dir < 0.40){
-					Cd = Cd * max(normal_dot_dir-0.15,0) * 4;
+					//Cd = Cd * max(normal_dot_dir-0.15,0) * 4;
 					//Cd = float3(0,0,0);
 				}
 		
@@ -154,6 +155,8 @@ Shader "Unlit/waterColor"
 			fixed4 _Color;
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+			sampler2D _PaintTex;
+			float4 _PaintTex_ST;
 
 			v2f vert(appdata v) {
 				v2f o;
@@ -170,7 +173,7 @@ Shader "Unlit/waterColor"
 				float3 norm_normal = normalize(v.normal);
 				float3 norm_viewDir = normalize(viewDir);
 				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
-				o.vertex += float4(norm_normal*0.1, 0);
+				//o.vertex += float4(norm_normal*0.1, 0);
 
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				o.vertex = UnityObjectToClipPos(o.vertex);
@@ -203,9 +206,9 @@ Shader "Unlit/waterColor"
 					}
 
 				}
-
+				fixed4 noise = tex2D(_PaintTex, i.uv);
                // bgcolor = tex2Dproj(_BackgroundTexture, i.uv);
-                return bgcolor*1;
+                return bgcolor;
             }
             ENDCG
         }
