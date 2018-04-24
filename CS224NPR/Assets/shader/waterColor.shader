@@ -373,8 +373,9 @@ Shader "Unlit/waterColor"
 				fixed4 color = tex2Dproj(_ColorTexture, i.grabPos);
 				fixed4 blur = tex2Dproj(_BlurTexture, i.grabPos);
 
-				//return fixed4(0.5,0.5,0.5,1);
-				return color + (blur-color) * control[0];
+				float4 c = color + (blur-color) * control[0];
+				//c = ;
+				return c + bg * (1-c[3]);
 			}
 			ENDCG
 		}//end of pass
