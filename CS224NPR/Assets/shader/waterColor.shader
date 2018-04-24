@@ -6,6 +6,9 @@ Shader "Unlit/waterColor"
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
+		_size ("blurSize", int) = 10
+		_sigma("sigma", float) = 20.0
+		_bluramount("blurAmount", float) = 0.0005
 	}
 	SubShader
 	{
@@ -139,21 +142,17 @@ Shader "Unlit/waterColor"
 
             struct v2f
             {
-				float2 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
-				float3 worldNormal : TEXCOORD1;
-				float3 worldPos : TEXCOORD2;
-				float3 viewDir : TEXCOORD3;
-				float turbulence: TEXCOORD4;
-                float4 grabPos : TEXCOORD5;
+				float2 uv : TEXCOORD0;
+				float4 grabPos : TEXCOORD1;
             };
 
 			#include "Lighting.cginc"
 			fixed4 _Color;
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			
-            v2f vert(appdata v) {
+
+			v2f vert(appdata v) {
 				v2f o;
 				o.vertex = v.vertex;
 				float3 viewDir = WorldSpaceViewDir(v.vertex);
@@ -169,31 +168,121 @@ Shader "Unlit/waterColor"
 				float3 norm_viewDir = normalize(viewDir);
 				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
 				o.vertex += float4(norm_normal*0.1, 0);
-				//o.vertex += v0;
 
-				//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
-
-				o.turbulence = 0.5 + pow(sin(_Time * s + o.vertex * 1000)*0.72, 7);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				o.vertex = UnityObjectToClipPos(o.vertex);
-				o.worldNormal = UnityObjectToWorldNormal(v.normal);
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-				o.viewDir = viewDir;
 
-                // use ComputeGrabScreenPos function from UnityCG.cginc
-                // to get the correct texture coordinate
-                o.grabPos = ComputeGrabScreenPos(o.vertex);
-                return o;
-            }
-
-            sampler2D _BackgroundTexture;
+				o.grabPos = ComputeGrabScreenPos(o.vertex);
+				return o;
+			}
+			
+			sampler2D _BackgroundTexture;
+			int _size;
+			float _sigma;
+			float _bluramount;
 
             half4 frag(v2f i) : SV_Target
             {
-                half4 bgcolor = tex2Dproj(_BackgroundTexture, i.grabPos);
+				half4 bgcolor = half4(0,0,0,0);
+				int size = _size;
+				float sigma = _sigma;
+				float bluramount = _bluramount;
+
+				for (int itx = -size; itx < size + 1; itx++) {
+					for (int ity = -size; ity < size + 1; ity++) {
+					//for (int ity = -0; ity < 0 + 1; ity++) {
+						float dis1 = itx*itx;
+						float dis2 = ity*ity;
+						//float pdf = sigma;
+						float pdf1 = 0.39894*exp(-0.5*dis1 / (sigma*sigma)) / sigma;
+						float pdf2 = 0.39894*exp(-0.5*dis2 / (sigma*sigma)) / sigma;
+						bgcolor += pdf1*pdf2 * tex2Dproj(_BackgroundTexture, UNITY_PROJ_COORD(float4(i.grabPos.x + itx*bluramount, i.grabPos.y + ity*bluramount, i.grabPos.z, i.grabPos.w)));
+					}
+
+				}
+
+               // bgcolor = tex2Dproj(_BackgroundTexture, i.uv);
                 return bgcolor*1;
             }
             ENDCG
         }
+
+
+
+
+
+
+			//     Pass
+			//     {
+			//         CGPROGRAM
+			//         #pragma vertex vert
+			//         #pragma fragment frag
+			//         #include "UnityCG.cginc"
+
+			//struct appdata
+			//{
+			//	float4 vertex : POSITION;
+			//	float2 uv : TEXCOORD0;
+			//	float3 normal : NORMAL;
+			//};
+
+			//         struct v2f
+			//         {
+			//	float2 uv : TEXCOORD0;
+			//	float4 vertex : SV_POSITION;
+			//	float3 worldNormal : TEXCOORD1;
+			//	float3 worldPos : TEXCOORD2;
+			//	float3 viewDir : TEXCOORD3;
+			//	float turbulence: TEXCOORD4;
+			//             float4 grabPos : TEXCOORD5;
+			//         };
+
+			//#include "Lighting.cginc"
+			//fixed4 _Color;
+			//sampler2D _MainTex;
+			//float4 _MainTex_ST;
+			//
+			//         v2f vert(appdata v) {
+			//	v2f o;
+			//	o.vertex = v.vertex;
+			//	float3 viewDir = WorldSpaceViewDir(v.vertex);
+
+			//	//hand tremor
+			//	float s = 1.0f;//speed
+			//	float f = 2000.0f;//frequency
+			//	float t = 0.01f;//tremor amount
+			//	float Pp = 1.0f;//pixel size of projection space
+			//	float a = 0.5f;
+			//	float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
+			//	float3 norm_normal = normalize(v.normal);
+			//	float3 norm_viewDir = normalize(viewDir);
+			//	o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
+			//	o.vertex += float4(norm_normal*0.1, 0);
+			//	//o.vertex += v0;
+
+			//	//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
+
+			//	o.turbulence = 0.5 + pow(sin(_Time * s + o.vertex * 1000)*0.72, 7);
+			//	o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+			//	o.vertex = UnityObjectToClipPos(o.vertex);
+			//	o.worldNormal = UnityObjectToWorldNormal(v.normal);
+			//	o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+			//	o.viewDir = viewDir;
+
+			//             // use ComputeGrabScreenPos function from UnityCG.cginc
+			//             // to get the correct texture coordinate
+			//             o.grabPos = ComputeGrabScreenPos(o.vertex);
+			//             return o;
+			//         }
+
+			//         sampler2D _BackgroundTexture;
+
+			//         half4 frag(v2f i) : SV_Target
+			//         {
+			//             half4 bgcolor = tex2Dproj(_BackgroundTexture, i.grabPos);
+			//             return bgcolor*1;
+			//         }
+			//         ENDCG
+			//     }
 	}
 }
