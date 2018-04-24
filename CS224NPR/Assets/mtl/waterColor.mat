@@ -75,8 +75,8 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _bluramount: 0.001
-    - _sigma: 2
+    - _bluramount: 0
+    - _sigma: 6.4
     - _size: 10
     m_Colors:
     - _Color: {r: 0.16219722, g: 0.41798422, b: 0.9191176, a: 1}
