@@ -7,10 +7,62 @@ Shader "Unlit/waterColor"
 		_MainTex ("Main Texture", 2D) = "white" {}
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_size ("blurSize", int) = 10
-		_sigma("sigma", float) = 20.0
-		_bluramount("blurAmount", float) = 0.0005
+		_sigma("sigma", float) = 2.0
+		_bluramount("blurAmount", float) = 0.001
 		_PaintTex ("Paint Texture", 2D) = "white" {}
+		_PaperTex("Paaper Texture", 2D) = "white" {}
 	}
+
+
+	//Common Vertex shader for blur and edge darkening
+	CGINCLUDE
+	#include "UnityCG.cginc"
+	struct appdataA
+	{
+		float4 vertex : POSITION;
+		float2 uv : TEXCOORD0;
+		float3 normal : NORMAL;
+	};
+
+	struct v2fA
+	{
+		float4 vertex : SV_POSITION;
+		float2 uv : TEXCOORD0;
+		float4 grabPos : TEXCOORD1;
+	};
+
+	#include "Lighting.cginc"
+	fixed4 _Color;
+	sampler2D _MainTex;
+	float4 _MainTex_ST;
+
+	v2fA vertA(appdataA v) {
+		v2fA o;
+		o.vertex = v.vertex;
+		float3 viewDir = WorldSpaceViewDir(v.vertex);
+
+		//hand tremor
+		float s = 1.0f;//speed
+		float f = 2000.0f;//frequency
+		float t = 0.01f;//tremor amount
+		float Pp = 1.0f;//pixel size of projection space
+		float a = 0.5f;
+		float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
+		float3 norm_normal = normalize(v.normal);
+		float3 norm_viewDir = normalize(viewDir);
+		o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
+		//o.vertex += float4(norm_normal*0.1, 0);
+
+		o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+		o.vertex = UnityObjectToClipPos(o.vertex);
+
+		o.grabPos = ComputeGrabScreenPos(o.vertex);
+		return o;
+	}
+
+	ENDCG
+
+
 	SubShader
 	{
 		Tags { "RenderType"="Opaque" }
@@ -40,11 +92,11 @@ Shader "Unlit/waterColor"
 				float3 viewDir : TEXCOORD3;
 				float turbulence: TEXCOORD4;
 			};
-
+			/*
 			#include "Lighting.cginc"
 			fixed4 _Color;
 			sampler2D _MainTex;
-			float4 _MainTex_ST;
+			float4 _MainTex_ST;*/
 			sampler2D _PaintTex;
 			float4 _PaintTex_ST;
 			
@@ -132,64 +184,20 @@ Shader "Unlit/waterColor"
             "_BackgroundTexture"
         }
 
- /*       Pass
+		//Blur Pass
+        Pass
         {
             CGPROGRAM
-            #pragma vertex vert
+            #pragma vertex vertA
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-			struct appdata
-			{
-				float4 vertex : POSITION;
-				float2 uv : TEXCOORD0;
-				float3 normal : NORMAL;
-			};
-
-            struct v2f
-            {
-				float4 vertex : SV_POSITION;
-				float2 uv : TEXCOORD0;
-				float4 grabPos : TEXCOORD1;
-            };
-
-			#include "Lighting.cginc"
-			fixed4 _Color;
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			sampler2D _PaintTex;
-			float4 _PaintTex_ST;
-
-			v2f vert(appdata v) {
-				v2f o;
-				o.vertex = v.vertex;
-				float3 viewDir = WorldSpaceViewDir(v.vertex);
-
-				//hand tremor
-				float s = 1.0f;//speed
-				float f = 2000.0f;//frequency
-				float t = 0.01f;//tremor amount
-				float Pp = 1.0f;//pixel size of projection space
-				float a = 0.5f;
-				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
-				float3 norm_normal = normalize(v.normal);
-				float3 norm_viewDir = normalize(viewDir);
-				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
-				//o.vertex += float4(norm_normal*0.1, 0);
-
-				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-				o.vertex = UnityObjectToClipPos(o.vertex);
-
-				o.grabPos = ComputeGrabScreenPos(o.vertex);
-				return o;
-			}
-			
 			sampler2D _BackgroundTexture;
 			int _size;
 			float _sigma;
 			float _bluramount;
 
-            half4 frag(v2f i) : SV_Target
+            half4 frag(v2fA i) : SV_Target
             {
 				half4 bgcolor = half4(0,0,0,0);
 				int size = _size;
@@ -208,14 +216,75 @@ Shader "Unlit/waterColor"
 					}
 
 				}
-				fixed4 noise = tex2D(_PaintTex, i.uv);
+				//fixed4 noise = tex2D(_PaintTex, i.uv);
                // bgcolor = tex2Dproj(_BackgroundTexture, i.uv);
                 return bgcolor;
             }
             ENDCG
         }
-		*/
 
+		GrabPass
+		{
+			"_BlurTexture"
+		}
+
+
+		//Edge darkening pass		
+		Pass
+		{
+			CGPROGRAM
+			#pragma vertex vertA
+			#pragma fragment frag
+			#include "UnityCG.cginc"
+			sampler2D _BackgroundTexture;
+			sampler2D _BlurTexture;
+			sampler2D _PaintTex;
+			float4 _PaintTex_ST;
+
+			half4 frag(v2fA i) : SV_Target
+			{
+				half4 bgcolor = tex2Dproj(_BackgroundTexture, i.grabPos);
+				half4 blurcolor = tex2Dproj(_BlurTexture, i.grabPos);
+				fixed4 ctrlImg = tex2D(_PaintTex, i.uv);
+				half4 minusColor = blurcolor - bgcolor;
+				half4 icb = ctrlImg.z*(blurcolor - bgcolor) + bgcolor;
+				half4 ied = pow(icb, 1 + ctrlImg.z * max(max(minusColor.r, minusColor.g), minusColor.b));
+				return ied;
+			}
+			ENDCG
+		}
+				
+		GrabPass
+		{
+			"_EndTexture"
+		}
+
+		// Paper Granulation
+		Pass
+		{
+			CGPROGRAM
+			#pragma vertex vertA
+			#pragma fragment frag
+			#include "UnityCG.cginc"
+			sampler2D _BackgroundTexture;
+			sampler2D _PaintTex;
+			sampler2D _PaperTex;
+			float4 _PaintTex_ST;
+
+			half4 frag(v2fA i) : SV_Target
+			{
+				half4 bgcolor = tex2Dproj(_BackgroundTexture, i.grabPos);
+				fixed4 ctrlImg = tex2D(_PaintTex, i.uv);
+				fixed4 paperIv = half4(1, 1, 1, 1) - tex2D(_PaperTex, i.uv);
+				float density = 0.5;
+
+				float saturation = pow(bgcolor.x * bgcolor.x + bgcolor.y * bgcolor.y + bgcolor.z * bgcolor.z, 0.5);
+				float saturationPaper = pow(paperIv.x * paperIv.x + paperIv.y * paperIv.y + paperIv.z * paperIv.z, 0.5);
+				half4 ig = bgcolor*(saturation - saturationPaper) + (half4(1, 1, 1, 1) - bgcolor)*pow(saturation, 1 + ctrlImg.y * saturationPaper * density);
+				return ig;
+			}
+			ENDCG
+		}
 
 
 
