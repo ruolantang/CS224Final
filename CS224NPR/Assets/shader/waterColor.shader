@@ -52,6 +52,7 @@ Shader "Unlit/waterColor"
 			{
 				v2f o;
 				o.vertex = v.vertex;
+				//o.vertex = mul(unity_ObjectToWorld, o.vertex);
 				float3 viewDir = WorldSpaceViewDir(v.vertex);
 
 				//hand tremor
@@ -63,7 +64,7 @@ Shader "Unlit/waterColor"
 				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
 				float3 norm_normal = normalize(v.normal);
 				float3 norm_viewDir = normalize(viewDir);
-				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
+				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
 				//o.vertex -= float4(norm_normal*0.2, 0);
 				//o.vertex += v0;
 
@@ -73,7 +74,8 @@ Shader "Unlit/waterColor"
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				o.vertex = UnityObjectToClipPos(o.vertex);
 				o.worldNormal = UnityObjectToWorldNormal(v.normal);
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+				o.worldPos = o.vertex.xyz;
+				//o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 				o.viewDir = viewDir;
 				return o;
 			}
@@ -130,7 +132,7 @@ Shader "Unlit/waterColor"
             "_BackgroundTexture"
         }
 
-        Pass
+ /*       Pass
         {
             CGPROGRAM
             #pragma vertex vert
@@ -212,7 +214,7 @@ Shader "Unlit/waterColor"
             }
             ENDCG
         }
-
+		*/
 
 
 
