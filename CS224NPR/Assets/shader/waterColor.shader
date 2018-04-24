@@ -223,7 +223,8 @@ Shader "Unlit/waterColor"
 				}
 				//fixed4 noise = tex2D(_PaintTex, i.uv);
                // bgcolor = tex2Dproj(_ColorTexture, i.uv);
-                return bgcolor;
+               return bgcolor;
+
             }
             ENDCG
         }
@@ -374,7 +375,6 @@ Shader "Unlit/waterColor"
 				fixed4 blur = tex2Dproj(_BlurTexture, i.grabPos);
 
 				float4 c = color + (blur-color) * control[0];
-				//c = ;
 				return c + bg * (1-c[3]);
 			}
 			ENDCG
