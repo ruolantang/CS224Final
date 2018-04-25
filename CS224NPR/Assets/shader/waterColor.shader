@@ -11,6 +11,10 @@ Shader "Unlit/waterColor"
 		_bluramount("blurAmount", float) = 0.001
 		_PaintTex ("Paint Texture", 2D) = "white" {}
 		_PaperTex("Paaper Texture", 2D) = "white" {}
+		_speed("hand tremor speed", range(0.0, 10.0)) = 1.0
+		_frequency("hand tremor frequency", range(1500.0,2500.0)) = 2000.0
+		_tremorAmount("tremor amount", range(0, 0.02)) = 0.01
+		_pp("pixel size of projection space", range(0.1,2.0)) = 1.0
 	}
 
 
@@ -35,6 +39,11 @@ Shader "Unlit/waterColor"
 	fixed4 _Color;
 	sampler2D _MainTex;
 	float4 _MainTex_ST;
+	float _speed;
+	float _frequency;
+	float _tremorAmount;
+	float _pp;
+
 
 	v2fA vertA(appdataA v) {
 		v2fA o;
