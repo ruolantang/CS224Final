@@ -183,7 +183,7 @@ Shader "Unlit/waterColor"
 			}
 			ENDCG
 		}//end of pass
-
+		/*
 		GrabPass
         {
             "_ColorTexture"
@@ -360,5 +360,7 @@ Shader "Unlit/waterColor"
 			}
 			ENDCG
 		}//end of pass
+
+		*/
 	}
 }
