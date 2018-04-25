@@ -80,8 +80,12 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     - _bluramount: 0.001
+    - _frequency: 2000
+    - _pp: 0.1
     - _sigma: 2
     - _size: 10
+    - _speed: 1
+    - _tremorAmount: 0.01
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
