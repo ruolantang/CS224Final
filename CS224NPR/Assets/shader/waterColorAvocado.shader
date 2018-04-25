@@ -1,16 +1,16 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Unlit/waterColor"
+Shader "waterColor/waterColorAvocado"
 {
 	Properties
 	{
-		_MainTex ("Main Texture", 2D) = "white" {}
+		_MainTex ("Main TextureAvocado", 2D) = "white" {}
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_size ("blurSize", int) = 10
 		_sigma("sigma", float) = 2.0
 		_bluramount("blurAmount", float) = 0.001
-		_PaintTex ("Paint Texture", 2D) = "white" {}
-		_PaperTex("Paaper Texture", 2D) = "white" {}
+		_PaintTex ("Paint TextureAvocado", 2D) = "white" {}
+		_PaperTex("Paaper TextureAvocado", 2D) = "white" {}
 		_speed("hand tremor speed", range(0.0, 10.0)) = 1.0
 		_frequency("hand tremor frequency", range(1500.0,2500.0)) = 2000.0
 		_tremorAmount("tremor amount", range(0, 0.02)) = 0.01
@@ -79,7 +79,7 @@ Shader "Unlit/waterColor"
 
 		GrabPass
         {
-            "_BackgroundTexture"
+            "_BackgroundTextureAvocado"
         }
 
 		Pass
@@ -192,10 +192,10 @@ Shader "Unlit/waterColor"
 			}
 			ENDCG
 		}//end of pass
-		/*
+
 		GrabPass
         {
-            "_ColorTexture"
+            "_ColorTextureAvocado"
         }
 
 		//Blur Pass
@@ -206,7 +206,7 @@ Shader "Unlit/waterColor"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-			sampler2D _ColorTexture;
+			sampler2D _ColorTextureAvocado;
 			int _size;
 			float _sigma;
 			float _bluramount;
@@ -226,12 +226,12 @@ Shader "Unlit/waterColor"
 						//float pdf = sigma;
 						float pdf1 = 0.39894*exp(-0.5*dis1 / (sigma*sigma)) / sigma;
 						float pdf2 = 0.39894*exp(-0.5*dis2 / (sigma*sigma)) / sigma;
-						bgcolor += pdf1*pdf2 * tex2Dproj(_ColorTexture, UNITY_PROJ_COORD(float4(i.grabPos.x + itx*bluramount, i.grabPos.y + ity*bluramount, i.grabPos.z, i.grabPos.w)));
+						bgcolor += pdf1*pdf2 * tex2Dproj(_ColorTextureAvocado, UNITY_PROJ_COORD(float4(i.grabPos.x + itx*bluramount, i.grabPos.y + ity*bluramount, i.grabPos.z, i.grabPos.w)));
 					}
 
 				}
 				//fixed4 noise = tex2D(_PaintTex, i.uv);
-               // bgcolor = tex2Dproj(_ColorTexture, i.uv);
+               // bgcolor = tex2Dproj(_ColorTextureAvocado, i.uv);
                return bgcolor;
 
             }
@@ -240,7 +240,7 @@ Shader "Unlit/waterColor"
 
 		GrabPass
 		{
-			"_BlurTexture"
+			"_BlurTextureAvocado"
 		}
 		
 		// Paper Granulation
@@ -250,14 +250,14 @@ Shader "Unlit/waterColor"
 			#pragma vertex vertA
 			#pragma fragment frag
 			#include "UnityCG.cginc"
-			sampler2D _ColorTexture;
+			sampler2D _ColorTextureAvocado;
 			sampler2D _PaintTex;
 			sampler2D _PaperTex;
 			float4 _PaintTex_ST;
 
 			half4 frag(v2fA i) : SV_Target
 			{
-				half4 bgcolor = tex2Dproj(_ColorTexture, i.grabPos);
+				half4 bgcolor = tex2Dproj(_ColorTextureAvocado, i.grabPos);
 				fixed4 ctrlImg = tex2D(_PaintTex, i.uv);
 				fixed4 paperIv = half4(1, 1, 1, 1) - tex2D(_PaperTex, i.uv);
 				float density = 0.5;
@@ -274,7 +274,7 @@ Shader "Unlit/waterColor"
 
 		GrabPass
 		{
-			"_PaperTexture"
+			"_PaperTextureAvocado"
 		}
 
 		Pass
@@ -342,10 +342,10 @@ Shader "Unlit/waterColor"
 				return o;
 			}
 
-			sampler2D _BackgroundTexture;
-			sampler2D _ColorTexture;
-			sampler2D _BlurTexture;
-			sampler2D _PaperTexture;
+			sampler2D _BackgroundTextureAvocado;
+			sampler2D _ColorTextureAvocado;
+			sampler2D _BlurTextureAvocado;
+			sampler2D _PaperTextureAvocado;
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
@@ -354,10 +354,10 @@ Shader "Unlit/waterColor"
 				float3 viewDir = normalize(i.viewDir);
 
 				fixed4 control = tex2D(_PaintTex, i.uv);
-				fixed4 bg = tex2Dproj(_BackgroundTexture, i.grabPos);
-				fixed4 color = tex2Dproj(_ColorTexture, i.grabPos);
-				fixed4 blur = tex2Dproj(_BlurTexture, i.grabPos);
-				fixed4 paper = tex2Dproj(_PaperTexture, i.grabPos);
+				fixed4 bg = tex2Dproj(_BackgroundTextureAvocado, i.grabPos);
+				fixed4 color = tex2Dproj(_ColorTextureAvocado, i.grabPos);
+				fixed4 blur = tex2Dproj(_BlurTextureAvocado, i.grabPos);
+				fixed4 paper = tex2Dproj(_PaperTextureAvocado, i.grabPos);
 
 				float4 c = color + (blur-color) * control[0];
 
@@ -370,6 +370,6 @@ Shader "Unlit/waterColor"
 			ENDCG
 		}//end of pass
 
-		*/
+
 	}
 }
