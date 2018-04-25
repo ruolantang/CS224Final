@@ -14,7 +14,7 @@ Shader "Unlit/waterColor"
 		_speed("hand tremor speed", range(0.0, 10.0)) = 1.0
 		_frequency("hand tremor frequency", range(1500.0,2500.0)) = 2000.0
 		_tremorAmount("tremor amount", range(0, 0.02)) = 0.01
-		_pp("pixel size of projection space", range(0.1,2.0)) = 1.0
+		_pp("pixel size of projection space", range(0.1,2.0)) = 0.1
 	}
 
 
@@ -51,16 +51,16 @@ Shader "Unlit/waterColor"
 		float3 viewDir = WorldSpaceViewDir(v.vertex);
 
 		//hand tremor
-		float s = 1.0f;//speed
-		float f = 2000.0f;//frequency
-		float t = 0.01f;//tremor amount
-		float Pp = 1.0f;//pixel size of projection space
+		float s = _speed;//speed
+		float f = _frequency;//frequency
+		float t = _tremorAmount;//tremor amount
+		float Pp = _pp;//pixel size of projection space
 		float a = 0.5f;
 		float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
 		float3 norm_normal = normalize(v.normal);
 		float3 norm_viewDir = normalize(viewDir);
 		o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
-		o.vertex += float4(norm_normal*0.2, 0);
+		//o.vertex += float4(norm_normal*0.2, 0);
 
 		o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 		o.vertex = UnityObjectToClipPos(o.vertex);
@@ -122,10 +122,10 @@ Shader "Unlit/waterColor"
 				float3 viewDir = WorldSpaceViewDir(v.vertex);
 
 				//hand tremor
-				float s = 1.0f;//speed
-				float f = 2000.0f;//frequency
-				float t = 0.01f;//tremor amount
-				float Pp = 1.0f;//pixel size of projection space
+				float s = _speed;//speed
+				float f = _frequency;//frequency
+				float t = _tremorAmount;//tremor amount
+				float Pp = _pp;//pixel size of projection space
 				float a = 0.5f;
 				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
 				float3 norm_normal = normalize(v.normal);
@@ -309,7 +309,7 @@ Shader "Unlit/waterColor"
 			float4 _MainTex_ST;*/
 			sampler2D _PaintTex;
 			float4 _PaintTex_ST;
-			
+
 			v2f vert (appdata v)
 			{
 				v2f o;
@@ -318,16 +318,16 @@ Shader "Unlit/waterColor"
 				float3 viewDir = WorldSpaceViewDir(v.vertex);
 
 				//hand tremor
-				float s = 1.0f;//speed
-				float f = 2000.0f;//frequency
-				float t = 0.01f;//tremor amount
-				float Pp = 1.0f;//pixel size of projection space
+				float s = _speed;//speed
+				float f = _frequency;//frequency
+				float t = _tremorAmount;//tremor amount
+				float Pp = _pp;//pixel size of projection space
 				float a = 0.5f;
 				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
 				float3 norm_normal = normalize(v.normal);
 				float3 norm_viewDir = normalize(viewDir);
 				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
-				o.vertex += float4(norm_normal*0.2, 0);
+				//o.vertex += float4(norm_normal*0.2, 0);
 				//o.vertex += v0;
 				//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
 
