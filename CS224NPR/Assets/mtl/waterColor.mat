@@ -84,7 +84,7 @@ Material:
     - _pp: 1
     - _sigma: 1
     - _size: 8.94
-    - _speed: 1
+    - _speed: 3
     - _tremorAmount: 0.01
     m_Colors:
     - _Color: {r: 0.16219722, g: 0.41798422, b: 0.9191176, a: 1}

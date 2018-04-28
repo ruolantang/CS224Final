@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Unlit/waterColor"
+Shader "Unlit/waterColor2"
 {
 	Properties
 	{
@@ -123,7 +123,7 @@ Shader "Unlit/waterColor"
 				float3 viewDir = WorldSpaceViewDir(v.vertex);
 
 				//hand tremor
-				float s = _speed;//speed
+				float s = _speed*100;//speed
 				float f = _frequency;//frequency
 				float t = _tremorAmount;//tremor amount
 				float Pp = _pp;//pixel size of projection space
