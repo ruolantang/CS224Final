@@ -15,6 +15,7 @@ Shader "Unlit/waterColor"
 		_frequency("hand tremor frequency", range(1500.0,2500.0)) = 2000.0
 		_tremorAmount("tremor amount", range(0, 0.5)) = 0.01
 		_pp("pixel size of projection space", range(0.1,2.0)) = 0.1
+		_bleedAmount("bleed amount", range(0.001,10)) = 0.1
 
 		//pencil
 		//outline shader
@@ -58,6 +59,7 @@ Shader "Unlit/waterColor"
 	float _frequency;
 	float _tremorAmount;
 	float _pp;
+	float _bleedAmount;
 
 
 //	v2fA vertA(appdataA v) {
@@ -165,7 +167,7 @@ Shader "Unlit/waterColor"
 				float3 norm_normal = normalize(v.normal);
 				float3 norm_viewDir = normalize(viewDir);
 				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
-				o.vertex -= float4(norm_normal*0.1, 0);
+				o.vertex -= float4(norm_normal*_bleedAmount, 0);
 				//o.vertex += v0;
 
 				//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
