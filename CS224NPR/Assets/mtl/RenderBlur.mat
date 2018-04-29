@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: waterColor
-  m_Shader: {fileID: 4800000, guid: 484074971eec540c6b49a05e4e682429, type: 3}
+  m_Name: RenderBlur
+  m_Shader: {fileID: 4800000, guid: 8ce66d16713c6104288628653d7f913c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -20,6 +20,10 @@ Material:
     m_TexEnvs:
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CamTex:
+        m_Texture: {fileID: 8400000, guid: 2398ddcb45332ce4da8f7af8b64beea4, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -50,14 +54,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _PaintTex:
-        m_Texture: {fileID: 2800000, guid: 5a4ad03a445a8fe49a0bccbb96db3c31, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _PaperTex:
-        m_Texture: {fileID: 2800000, guid: 337a1706bda0b45d5bdb8e622e39a49c, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -79,13 +75,9 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _bluramount: 0.004
-    - _frequency: 1514
-    - _pp: 1
-    - _sigma: 1
-    - _size: 8.94
-    - _speed: 5
-    - _tremorAmount: 0.01
+    - _bluramount: 0.06
+    - _sigma: 2.71
+    - _size: 10
     m_Colors:
-    - _Color: {r: 0.16219722, g: 0.41798422, b: 0.9191176, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
