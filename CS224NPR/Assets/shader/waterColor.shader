@@ -188,8 +188,8 @@ Shader "Unlit/waterColor"
 					//Cd = Cd * max(normal_dot_dir-0.15,0) * 4;
 					//Cd = float3(0,0,0);
 				}
-		
-				return fixed4(Cd,1);
+
+				return fixed4(Cd,0);
 			}
 			ENDCG
 		}//end of pass
