@@ -75,7 +75,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PaintTex:
-        m_Texture: {fileID: 2800000, guid: dfcd4dcb2145c6d4f9da3e7654d22d9e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9535fafa1a8a54d9ca31d5f0c2a707ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PaperTex:
@@ -109,6 +109,7 @@ Material:
     - _TileFactor: 2
     - _UVSec: 0
     - _ZWrite: 1
+    - _bleedAmount: 0.05
     - _bluramount: 0.001
     - _frequency: 2000
     - _greyScale: 2.1
@@ -116,7 +117,7 @@ Material:
     - _sigma: 2
     - _size: 10
     - _speed: 1
-    - _tremorAmount: 0.01
+    - _tremorAmount: 0.05
     m_Colors:
     - _Color: {r: 0.26757136, g: 0.52640575, b: 0.74264705, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

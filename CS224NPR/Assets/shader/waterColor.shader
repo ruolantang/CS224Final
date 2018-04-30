@@ -403,4 +403,5 @@ Shader "Unlit/waterColor"
 		
 
 	}
+	FallBack "Specular"
 }
