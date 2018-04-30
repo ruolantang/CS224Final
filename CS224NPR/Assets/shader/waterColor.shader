@@ -167,7 +167,7 @@ Shader "Unlit/waterColor"
 				float3 norm_normal = normalize(v.normal);
 				float3 norm_viewDir = normalize(viewDir);
 				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
-				o.vertex -= float4(norm_normal*_bleedAmount, 0);
+				o.vertex += float4(norm_normal*_bleedAmount, 0);
 				//o.vertex += v0;
 
 				//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);

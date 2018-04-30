@@ -74,7 +74,7 @@ Shader "Unlit/waterColor"
 			float3 norm_normal = normalize(v.normal);
 			float3 norm_viewDir = normalize(viewDir);
 			o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
-			o.vertex -= float4(norm_normal*_bleedAmount*2.5, 0);
+			o.vertex += float4(norm_normal*_bleedAmount*5, 0);
 
 			o.uv = TRANSFORM_TEX(v.uv, _PaintTex);
 			o.vertex = UnityObjectToClipPos(o.vertex);

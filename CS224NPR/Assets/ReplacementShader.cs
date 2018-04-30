@@ -9,9 +9,9 @@ public class ReplacementShader : MonoBehaviour {
 	void Start () {
         GetComponent<Camera>().SetReplacementShader(shader, "");
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 }
