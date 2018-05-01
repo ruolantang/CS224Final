@@ -71,11 +71,11 @@
 				float minRGB = min(Ied.x, min(Ied.y, Ied.z));
 				float saturation = (maxRGB-minRGB)/maxRGB;
 
-				float d = 10;
+				float d = control[1]*5;
 				float Piv = 1 - paper;
-				float Ig = saturation*(saturation-Piv) + (1-saturation) * pow(saturation, 1+(control[1]*d*Piv));
+				float4 Ig = saturation*(Ied-Piv) + (1-saturation) * pow(Ied, 1+(control[1]*d*Piv));
 
-				return Ig + Ied;
+				return Ig;// + Ied;
 				//return Ig*0.5 + Ied;
 			}
 			ENDCG
