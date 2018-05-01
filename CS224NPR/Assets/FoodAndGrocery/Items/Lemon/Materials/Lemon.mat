@@ -75,7 +75,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PaintTex:
-        m_Texture: {fileID: 2800000, guid: e38d7d321d62b5e4aa20f841dcec68e5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9535fafa1a8a54d9ca31d5f0c2a707ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PaperTex:
@@ -86,11 +86,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _black:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EdgeThread: 0.1
     - _GlossMapScale: 1
     - _Glossiness: 0.024
     - _GlossyReflections: 1
@@ -105,6 +110,7 @@ Material:
     - _TileFactor: 1
     - _UVSec: 0
     - _ZWrite: 1
+    - _blackScale: 2
     - _bleedAmount: 0.001
     - _bluramount: 0.001
     - _frequency: 2000
@@ -117,4 +123,5 @@ Material:
     m_Colors:
     - _Color: {r: 0.9412, g: 0.7492538, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutColor: {r: 0, g: 0, b: 0, a: 0}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}

@@ -547,7 +547,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1079377395
 Transform:
   m_ObjectHideFlags: 0
@@ -594,9 +594,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bd09b81f4bf745b285890cec2db879f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 6
-  gravity: 0
-  _charController: {fileID: 0}
 --- !u!136 &1081963942
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -642,12 +639,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fc347a1841ab46299a121e6b0275bce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  axes: 0
-  sensitivityHor: 9
-  sensitivityVert: 9
-  minimumVert: -15
-  maximumVert: 45
-  _rotationX: 0
 --- !u!4 &1116489112 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4000012910057650, guid: d3a86a245c874f341815b25579c74e3e,
@@ -737,7 +728,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1214058140
 Transform:
   m_ObjectHideFlags: 0
