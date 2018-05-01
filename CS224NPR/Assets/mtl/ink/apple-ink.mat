@@ -6,10 +6,10 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Lemon
-  m_Shader: {fileID: 4800000, guid: 484074971eec540c6b49a05e4e682429, type: 3}
-  m_ShaderKeywords: _EMISSION
-  m_LightmapFlags: 1
+  m_Name: apple-ink
+  m_Shader: {fileID: 4800000, guid: 5553198183c9d415aa5a25f45cff126c, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -38,32 +38,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Hatch0:
-        m_Texture: {fileID: 2800000, guid: ec81dafda2d08ca4393be4ee4401526d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Hatch1:
-        m_Texture: {fileID: 2800000, guid: 8884713c88adc7b45bd33fe0971f85a9, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Hatch2:
-        m_Texture: {fileID: 2800000, guid: 5e63322e250b81f4792a4126b2337892, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Hatch3:
-        m_Texture: {fileID: 2800000, guid: e42ebff3407765f43b1a0c1794c6040e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Hatch4:
-        m_Texture: {fileID: 2800000, guid: dc3f4914e0a5f68438bc801d9f12b1d5, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Hatch5:
-        m_Texture: {fileID: 2800000, guid: b065aa5b90ab2314c9507ebfebc689fb, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e2f081473b6d87b4c9ecd64a61035edc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -74,15 +50,15 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _PaintTex:
-        m_Texture: {fileID: 2800000, guid: e38d7d321d62b5e4aa20f841dcec68e5, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _PaperTex:
-        m_Texture: {fileID: 2800000, guid: 337a1706bda0b45d5bdb8e622e39a49c, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _White1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _black:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -91,30 +67,26 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EdgeThread: 0.1
+    - _Gloss: 20
     - _GlossMapScale: 1
-    - _Glossiness: 0.024
+    - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _Outline: 0.1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _TileFactor: 1
+    - _Tooniness: 4
     - _UVSec: 0
     - _ZWrite: 1
-    - _bleedAmount: 0.001
-    - _bluramount: 0.001
-    - _frequency: 2000
-    - _greyScale: 0.5
-    - _pp: 0.1
-    - _sigma: 2
-    - _size: 10
-    - _speed: 1
-    - _tremorAmount: 0.001
+    - _blackScale: 2
     m_Colors:
-    - _Color: {r: 0.9412, g: 0.7492538, b: 0, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutColor: {r: 0, g: 0, b: 0, a: 0}
+    - _Specular: {r: 1, g: 1, b: 1, a: 1}
+    - _White1Adjust: {r: 0, g: 0, b: 0, a: 0}
+    - _White1Color: {r: 1, g: 1, b: 1, a: 1}

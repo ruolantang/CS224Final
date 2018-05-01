@@ -91,7 +91,7 @@ Shader "Unlit/waterColor"
 
 	SubShader
 	{
-		Tags {"Queue"="Transparent" "RenderType"="Transparent" }
+		Tags {"Queue"="Transparent" "RenderType"="Opaque" }
 		//Tags {"RenderType"="Opaque"}
 		LOD 100
 
@@ -102,10 +102,13 @@ Shader "Unlit/waterColor"
 
 		Pass
 		{
+			Tags { "LightMode"="ForwardBase" }
+
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			
+			#pragma multi_compile_fwdbase
+
 			#include "UnityCG.cginc"
 			#include "AutoLight.cginc"
 			#include "UnityShaderVariables.cginc"
@@ -263,12 +266,13 @@ Shader "Unlit/waterColor"
 				}
 
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
+				fixed shadow = SHADOW_ATTENUATION(i);
 
 				fixed4 pencilTemp = fixed4(hatchColor.rgb * _Color.rgb * atten, 1.0);
 				float grey = (pencilTemp.x + pencilTemp.y + pencilTemp.z) / 3.0;
 
 				//return min(_greyScale*grey, 1.0) * fixed4(Cd,0);
-				return fixed4(Cd,1);
+				return fixed4(Cd * shadow,1);
 			}
 			ENDCG
 		}//end of pass
@@ -404,5 +408,5 @@ Shader "Unlit/waterColor"
 		
 
 	}
-	FallBack "VertexLit"
+	FallBack "Specular"
 }
