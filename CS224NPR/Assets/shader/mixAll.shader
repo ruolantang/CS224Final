@@ -5,6 +5,7 @@
 		_beforeTex("Before Blur Texture", 2D) = "white" {}
 		_afterTex ("After Blur Texture", 2D) = "white" {}
 		_ctrlTex("Control Texture", 2D) = "white" {}
+		_depthTex("Depth Texture", 2D) = "white" {}
 		_paperTex ("Paint Texture", 2D) = "white" {}
 	}
 
@@ -39,6 +40,8 @@
 			float4 _afterTex_ST;
 			sampler2D _ctrlTex;
 			float4 _ctrlTex_ST;
+			sampler2D _depthTex;
+			float4 _depthTex_ST;
 			sampler2D _paperTex;
 			float4 _paperTex_ST;
 			
@@ -59,6 +62,7 @@
 				//fixed4 bg = tex2Dproj(_BackgroundTexture, i.grabPos);
 				fixed4 color = tex2D(_beforeTex, i.uv);
 				fixed4 blur = tex2D(_afterTex, i.uv);
+				fixed4 depth = tex2D(_depthTex, i.uv);
 				//fixed4 paper = tex2Dproj(_PaperTexture, i.grabPos);
 
 				//float4 c = color + (blur-color) * control[0];
