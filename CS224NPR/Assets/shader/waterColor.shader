@@ -195,7 +195,7 @@ Shader "Unlit/waterColor"
 
 				Cd = Cd + (Cp - Cd) * Ct;
 
-				Cd = Cd * shadow;
+				//Cd = Cd + diffuse * shadow;
 				//Cd = max(0,Ct);
 
 				//Edge
@@ -219,7 +219,7 @@ Shader "Unlit/waterColor"
 
 				//return outline;
 
-				return fixed4(Cd*shadow,1);
+				return fixed4(Cd,1);
 			}
 			ENDCG
 		}//end of pass

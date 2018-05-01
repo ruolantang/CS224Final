@@ -6,6 +6,7 @@
 		_afterTex ("After Blur Texture", 2D) = "white" {}
 		_ctrlTex("Control Texture", 2D) = "white" {}
 		_depthTex("Depth Texture", 2D) = "white" {}
+		_blurTex("After Blur Texture2", 2D) = "white" {}
 		_paperTex ("Paint Texture", 2D) = "white" {}
 	}
 
@@ -42,6 +43,8 @@
 			float4 _ctrlTex_ST;
 			sampler2D _depthTex;
 			float4 _depthTex_ST;
+			sampler2D _blurTex;
+			float4 _blurTex_ST;
 			sampler2D _paperTex;
 			float4 _paperTex_ST;
 			
@@ -63,14 +66,15 @@
 				fixed4 color = tex2D(_beforeTex, i.uv);
 				fixed4 blur = tex2D(_afterTex, i.uv);
 				fixed4 depth = tex2D(_depthTex, i.uv);
+				fixed4 blur2 = tex2D(_blurTex, i.uv);
 				//fixed4 paper = tex2Dproj(_PaperTexture, i.grabPos);
 
 				//float4 c = color + (blur-color) * control[0];
 
 				float4 Icb = color + (blur-color) * control[2];
-				float4 diff = (blur - color)*5;
+				float4 diff = max(0,(blur2 - color) * 5);
 				float4 Ied = pow(Icb, 1 + control[2] * max(max(diff.x,diff.y),diff.z));
-				Ied = Icb;
+				//Ied = Icb;
 
 				float maxRGB = max(Ied.x, max(Ied.y, Ied.z));
 				float minRGB = min(Ied.x, min(Ied.y, Ied.z));
