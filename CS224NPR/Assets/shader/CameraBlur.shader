@@ -55,21 +55,23 @@
 				float bluramount = _bluramount;
 
 				for (int itx = -size; itx < size + 1; itx++) {
-					for (int ity = -size; ity < size + 1; ity++) {
-						//for (int ity = -0; ity < 0 + 1; ity++) {
-						float dis1 = itx*itx;
-						float dis2 = ity*ity;
-						//float pdf = sigma;
-						float pdf1 = 0.39894*exp(-0.5*dis1 / (sigma*sigma)) / sigma;
-						float pdf2 = 0.39894*exp(-0.5*dis2 / (sigma*sigma)) / sigma;
-						bgcolor += pdf1*pdf2 *tex2D(_CamTex, float2(i.uv.x + itx*bluramount, i.uv.y + ity*bluramount));
-						//bgcolor += pdf1*pdf2 * tex2Dproj(_ColorTexture, UNITY_PROJ_COORD(float4(i.grabPos.x + itx*bluramount, i.grabPos.y + ity*bluramount, i.grabPos.z, i.grabPos.w)));
-					}
-
+					//for (int ity = -0; ity < 0 + 1; ity++) {
+					float dis = itx*itx;
+					//float pdf = sigma;
+					float pdf = 0.39894*exp(-0.5*dis / (sigma*sigma)) / sigma;
+					bgcolor += pdf * tex2D(_CamTex, float2(i.uv.x + itx*bluramount, i.uv.y));
+					//bgcolor += pdf1*pdf2 * tex2Dproj(_ColorTexture, UNITY_PROJ_COORD(float4(i.grabPos.x + itx*bluramount, i.grabPos.y + ity*bluramount, i.grabPos.z, i.grabPos.w)));
 				}
 				return bgcolor;
 			}
 			ENDCG
 		}
+
+		GrabPass
+        {
+            "_BackgroundTexture"
+        }
+
+
 	}
 }

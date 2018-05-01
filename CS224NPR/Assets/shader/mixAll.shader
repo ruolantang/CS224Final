@@ -66,6 +66,7 @@
 				float4 Icb = color + (blur-color) * control[2];
 				float4 diff = (blur - color)*5;
 				float4 Ied = pow(Icb, 1 + control[2] * max(max(diff.x,diff.y),diff.z));
+				Ied = Icb;
 
 				float maxRGB = max(Ied.x, max(Ied.y, Ied.z));
 				float minRGB = min(Ied.x, min(Ied.y, Ied.z));
@@ -74,6 +75,7 @@
 				float d = control[1]*5;
 				float Piv = 1 - paper;
 				float4 Ig = saturation*(Ied-Piv) + (1-saturation) * pow(Ied, 1+(control[1]*d*Piv));
+				//float4 Ig = Ied*(Ied-Piv) + (1-Ied) * pow(Ied, 1+(control[1]*d*Piv));
 
 				return Ig;// + Ied;
 				//return Ig*0.5 + Ied;

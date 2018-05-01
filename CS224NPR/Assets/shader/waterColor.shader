@@ -206,7 +206,7 @@ Shader "Unlit/waterColor"
 			     	outline = tex2D(_black, findColor);
 			     	outline.a = (outline.r + outline.g + outline.b ) / 3;
 			     	outline *= _OutColor;
-			     	return outline;
+					return outline;
 				}else{//inner
 //					fixed4 col1 = GetColorFromTexture( _White1 , i.uv , _White1Adjust );
 //				 	col1.rgb = 0.2*_White1Color.rgb +0.8* col.rgb;

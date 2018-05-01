@@ -66,6 +66,10 @@ Material:
         m_Texture: {fileID: 8400000, guid: 853718db9d01af244a6823e79a0b21dd, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _paperTex:
+        m_Texture: {fileID: 2800000, guid: ab767650faf87451fae2b02805ba8e17, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
