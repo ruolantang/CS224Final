@@ -32,7 +32,7 @@ Shader "Unlit/Depth"
 			fixed4 frag(v2f i) : SV_Target
 			{
 				float2 uv = i.screenuv.xy / i.screenuv.w;
-				float depth = 1 - Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv));
+				float depth = 1 - Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv)) * 100;
 				return fixed4(depth, depth, depth, 1);
 			}
 			ENDCG
