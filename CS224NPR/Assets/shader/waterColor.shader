@@ -165,8 +165,10 @@ Shader "Unlit/waterColor"
 				fixed3 albedo = texColor.rgb * _Color.rgb;
 				fixed3 ambient = 2*UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
+				fixed shadow = SHADOW_ATTENUATION(i);
 				//float3 C =  float3(0.76,0.37,0);
-				float3 C = ambient;
+				float3 C = ambient+diffuse*shadow;
 
 				//Watercolor Reflectance Model
 				float da = 1.0f;//dilute area variable
@@ -192,10 +194,6 @@ Shader "Unlit/waterColor"
 				Cd = Cd + (Cp - Cd) * Ct;
 				//Cd = max(0,Ct);
 
-				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
-				fixed shadow = SHADOW_ATTENUATION(i);
-
-
 				//Edge
 				//float normal_dot_dir = abs(dot(worldNormal, viewDir));
 				fixed4 outline = fixed4(1,1,1,1);
@@ -218,7 +216,7 @@ Shader "Unlit/waterColor"
 				//return outline;
 
 
-				return fixed4(Cd * shadow,1);
+				return fixed4(Cd,1);
 			}
 			ENDCG
 		}//end of pass
