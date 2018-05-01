@@ -61,8 +61,8 @@ Shader "Unlit/waterColor"
 
 	SubShader
 	{
-		Tags {"Queue"="Transparent" "RenderType"="Opaque" }
-		//Tags {"RenderType"="Opaque"}
+		//Tags {"Queue"="Transparent" "RenderType"="Opaque" }
+		Tags {"RenderType"="Opaque"}
 		LOD 100
 
 		GrabPass
@@ -73,7 +73,7 @@ Shader "Unlit/waterColor"
 		Pass
 		{
 			Tags { "LightMode"="ForwardBase" }
-
+			ZWrite On
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -101,6 +101,7 @@ Shader "Unlit/waterColor"
 				float3 viewDir : TEXCOORD3;
 				float turbulence: TEXCOORD4;
 				float weight: TEXCOORD5;
+
 				SHADOW_COORDS(6)
 			};
 			/*
@@ -150,7 +151,7 @@ Shader "Unlit/waterColor"
 				float3 worldLightDir = normalize(WorldSpaceLightDir(v.vertex));
 				float3 worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.weight = dot(worldLightDir, worldNormal);
-				TRANSFER_SHADOW(o)
+				//TRANSFER_SHADOW(o)
 
 				return o;
 			}
@@ -168,7 +169,8 @@ Shader "Unlit/waterColor"
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 				fixed shadow = SHADOW_ATTENUATION(i);
 				//float3 C =  float3(0.76,0.37,0);
-				float3 C = ambient+diffuse*shadow;
+				float3 C = ambient;
+				//C = ambient+diffuse*shadow;
 
 				//Watercolor Reflectance Model
 				float da = 1.0f;//dilute area variable
@@ -192,6 +194,8 @@ Shader "Unlit/waterColor"
 				}
 
 				Cd = Cd + (Cp - Cd) * Ct;
+
+				Cd = Cd * shadow;
 				//Cd = max(0,Ct);
 
 				//Edge
@@ -215,13 +219,13 @@ Shader "Unlit/waterColor"
 
 				//return outline;
 
-
-				return fixed4(Cd,1);
+				return fixed4(Cd*shadow,1);
 			}
 			ENDCG
 		}//end of pass
 		
 
 	}
-	FallBack "Specular"
+	Fallback "Diffuse"
+	//FallBack "Specular"
 }
