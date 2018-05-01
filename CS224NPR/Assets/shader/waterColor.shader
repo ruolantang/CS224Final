@@ -17,20 +17,12 @@ Shader "Unlit/waterColor"
 		_pp("pixel size of projection space", range(0.1,2.0)) = 0.1
 		_bleedAmount("bleed amount", range(0.001,10)) = 0.1
 
-		//pencil
 		//outline shader
-		_Outline("Outline Width", Range(0,1)) = 0.1
-		_OutlineColor("Outline Color", Color) = (0, 0, 0, 1)
+		_EdgeThread("EdgeThread" , Range(0,0.5) ) = 0.1
+		_OutColor( "OutColor" , Color) = (0,0,0,0)
+		_blackScale("black scale" , float) = 2
+		_black("black", 2D ) = "white" {}
 
-		//pencil stroke textures parameters
-		_greyScale("grey scale", float) = 0.5
-		_TileFactor("Tile Factor", Float) = 1
-		_Hatch0("Hatch 0", 2D) = "white" {}
-		_Hatch1("Hatch 1", 2D) = "white" {}
-		_Hatch2("Hatch 2", 2D) = "white" {}
-		_Hatch3("Hatch 3", 2D) = "white" {}
-		_Hatch4("Hatch 4", 2D) = "white" {}
-		_Hatch5("Hatch 5", 2D) = "white" {}
 	}
 
 
@@ -60,31 +52,9 @@ Shader "Unlit/waterColor"
 	float _tremorAmount;
 	float _pp;
 	float _bleedAmount;
+	sampler2D _black;
+	float4 _black_ST;
 
-
-//	v2fA vertA(appdataA v) {
-//		v2fA o;
-//		o.vertex = v.vertex;
-//		float3 viewDir = WorldSpaceViewDir(v.vertex);
-//
-//		//hand tremor
-//		float s = _speed;//speed
-//		float f = _frequency;//frequency
-//		float t = _tremorAmount;//tremor amount
-//		float Pp = _pp;//pixel size of projection space
-//		float a = 0.5f;
-//		float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
-//		float3 norm_normal = normalize(v.normal);
-//		float3 norm_viewDir = normalize(viewDir);
-//		//o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));
-//		//o.vertex -= float4(norm_normal*0.01, 0);
-//
-//		o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-//		o.vertex = UnityObjectToClipPos(o.vertex);
-//
-//		o.grabPos = ComputeGrabScreenPos(o.vertex);
-//		return o;
-//	}
 
 	ENDCG
 
@@ -131,8 +101,7 @@ Shader "Unlit/waterColor"
 				float3 viewDir : TEXCOORD3;
 				float turbulence: TEXCOORD4;
 				float weight: TEXCOORD5;
-				float2 uv_pencil : TEXCOORD6;
-				SHADOW_COORDS(7)
+				SHADOW_COORDS(6)
 			};
 			/*
 
@@ -141,17 +110,10 @@ Shader "Unlit/waterColor"
 			float4 _MainTex_ST;*/
 			sampler2D _PaintTex;
 			float4 _PaintTex_ST;
+			fixed4 _OutColor;
+			float _EdgeThread;
+			float _blackScale;
 
-
-			//pencil
-			float _TileFactor;
-			sampler2D _Hatch0;
-			sampler2D _Hatch1;
-			sampler2D _Hatch2;
-			sampler2D _Hatch3;
-			sampler2D _Hatch4;
-			sampler2D _Hatch5;
-			float _greyScale;
 			
 			v2f vert (appdata v)
 			{
@@ -184,7 +146,7 @@ Shader "Unlit/waterColor"
 				o.viewDir = viewDir;
 
 				//pencil
-				o.uv_pencil = v.uv.xy * _TileFactor;
+
 				float3 worldLightDir = normalize(WorldSpaceLightDir(v.vertex));
 				float3 worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.weight = dot(worldLightDir, worldNormal);
@@ -229,182 +191,37 @@ Shader "Unlit/waterColor"
 
 				Cd = Cd + (Cp - Cd) * Ct;
 				//Cd = max(0,Ct);
-				//Edge
-				float normal_dot_dir = abs(dot(worldNormal, viewDir));
-				if(normal_dot_dir < 0.40){
-					//Cd = Cd * max(normal_dot_dir-0.15,0) * 4;
-					//Cd = float3(0,0,0);
-				}
-
-				//pencil
-				fixed4 hatchColor;
-
-				float weight = i.weight * 7.0;
-				if (weight > 6.0) {
-					hatchColor = fixed4(1, 1, 1, 1);
-				}
-				else if (weight > 5.0) {
-					hatchColor = (weight - 5.0) * fixed4(1, 1, 1, 1) + (5.0 + 1.0 - weight) * tex2D(_Hatch0, i.uv_pencil);
-				}
-				else if (weight > 4.0) {
-					hatchColor = (weight - 4.0) * tex2D(_Hatch0, i.uv_pencil) + (4.0 + 1.0 - weight) * tex2D(_Hatch1, i.uv_pencil);
-				}
-				else if (weight > 3.0) {
-					hatchColor = (weight - 3.0) * tex2D(_Hatch1, i.uv_pencil) + (3.0 + 1.0 - weight) * tex2D(_Hatch2, i.uv_pencil);
-				}
-				else if (weight > 2.0) {
-					hatchColor = (weight - 2.0) * tex2D(_Hatch2, i.uv_pencil) + (2.0 + 1.0 - weight) * tex2D(_Hatch2, i.uv_pencil);
-				}
-				else if (weight > 1.0) {
-					hatchColor = (weight - 1.0) * tex2D(_Hatch3, i.uv_pencil) + (1.0 + 1.0 - weight) * tex2D(_Hatch3, i.uv_pencil);
-				}
-				else if (weight > 0.0) {
-					hatchColor = (weight - 0.0) * tex2D(_Hatch4, i.uv_pencil) + (0.0 + 1.0 - weight) * tex2D(_Hatch3, i.uv_pencil);
-				}
-				else {
-					hatchColor = tex2D(_Hatch3, i.uv_pencil);
-				}
 
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 				fixed shadow = SHADOW_ATTENUATION(i);
 
-				fixed4 pencilTemp = fixed4(hatchColor.rgb * _Color.rgb * atten, 1.0);
-				float grey = (pencilTemp.x + pencilTemp.y + pencilTemp.z) / 3.0;
 
-				//return min(_greyScale*grey, 1.0) * fixed4(Cd,0);
+				//Edge
+				//float normal_dot_dir = abs(dot(worldNormal, viewDir));
+				fixed4 outline = fixed4(1,1,1,1);
+				float vdotn = abs(dot( viewDir , worldNormal ));
+				float ff = pow(vdotn,2);
+				if(ff < _EdgeThread){//edge
+					float2 findColor = float2(f*2.5f,i.uv.x/2.0f + i.uv.y/2.0f) / _blackScale;
+			     	outline = tex2D(_black, findColor);
+			     	outline.a = (outline.r + outline.g + outline.b ) / 3;
+			     	outline *= _OutColor;
+			     	return outline;
+				}else{//inner
+//					fixed4 col1 = GetColorFromTexture( _White1 , i.uv , _White1Adjust );
+//				 	col1.rgb = 0.2*_White1Color.rgb +0.8* col.rgb;
+//				  	col1.a *= _White1Color.a;
+//				  	outline = col1;
+//				  	return col1;
+				}
+
+				//return outline;
+
+
 				return fixed4(Cd * shadow,1);
 			}
 			ENDCG
 		}//end of pass
-
-		
-//		// Paper Granulation
-//		Pass
-//		{
-//			CGPROGRAM
-//			#pragma vertex vertA
-//			#pragma fragment frag
-//			#include "UnityCG.cginc"
-//			sampler2D _ColorTexture;
-//			sampler2D _PaintTex;
-//			sampler2D _PaperTex;
-//			float4 _PaintTex_ST;
-//
-//			half4 frag(v2fA i) : SV_Target
-//			{
-//				half4 bgcolor = tex2Dproj(_ColorTexture, i.grabPos);
-//				fixed4 ctrlImg = tex2D(_PaintTex, i.uv);
-//				fixed4 paperIv = half4(1, 1, 1, 1) - tex2D(_PaperTex, i.uv);
-//				float density = 0.5;
-//
-//				//float saturation = pow(bgcolor.x * bgcolor.x + bgcolor.y * bgcolor.y + bgcolor.z * bgcolor.z, 0.5);
-//				float saturation = pow(dot(bgcolor.xyz, bgcolor.xyz), 0.5);
-//				float saturationPaper = pow(paperIv.x * paperIv.x + paperIv.y * paperIv.y + paperIv.z * paperIv.z, 0.5);
-//				half4 ig = bgcolor*(saturation - saturationPaper) + (half4(1, 1, 1, 1) - bgcolor)*pow(saturation, 1 + ctrlImg.y * saturationPaper * density);
-//				return ig;
-//			}
-//			ENDCG
-//		}
-		
-//
-//		GrabPass
-//		{
-//			"_PaperTexture"
-//		}
-		
-		
-//		Pass
-//		{
-//			CGPROGRAM
-//			#pragma vertex vert
-//			#pragma fragment frag
-//			
-//			#include "UnityCG.cginc"
-//
-//			struct appdata
-//			{
-//				float4 vertex : POSITION;
-//				float2 uv : TEXCOORD0;
-//				float3 normal : NORMAL;
-//			};
-//
-//			struct v2f
-//			{
-//				float2 uv : TEXCOORD0;
-//				float4 vertex : SV_POSITION;
-//				float3 worldNormal : TEXCOORD1;
-//				float3 worldPos : TEXCOORD2;
-//				float3 viewDir : TEXCOORD3;
-//				float turbulence: TEXCOORD4;
-//				float4 grabPos : TEXCOORD5;
-//			};
-//			/*
-//			#include "Lighting.cginc"
-//			fixed4 _Color;
-//			sampler2D _MainTex;
-//			float4 _MainTex_ST;*/
-//			sampler2D _PaintTex;
-//			float4 _PaintTex_ST;
-//
-//			v2f vert (appdata v)
-//			{
-//				v2f o;
-//				o.vertex = v.vertex;
-//				//o.vertex = mul(unity_ObjectToWorld, o.vertex);
-//				float3 viewDir = WorldSpaceViewDir(v.vertex);
-//
-//				//hand tremor
-//				float s = _speed;//speed
-//				float f = _frequency;//frequency
-//				float t = _tremorAmount;//tremor amount
-//				float Pp = _pp;//pixel size of projection space
-//				float a = 0.5f;
-//				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
-//				float3 norm_normal = normalize(v.normal);
-//				float3 norm_viewDir = normalize(viewDir);
-//				//o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
-//				//o.vertex += float4(norm_normal*0.1, 0);
-//				//o.vertex += v0;
-//				//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
-//
-//				o.turbulence = 0.5 + pow(sin(_Time * s + o.vertex * 1000)*0.72, 7);
-//				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-//				o.vertex = UnityObjectToClipPos(o.vertex);
-//				o.worldNormal = UnityObjectToWorldNormal(v.normal);
-//				o.worldPos = o.vertex.xyz;
-//				//o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-//				o.viewDir = viewDir;
-//				o.grabPos = ComputeGrabScreenPos(o.vertex);
-//				return o;
-//			}
-//
-//			sampler2D _BackgroundTexture;
-//			sampler2D _ColorTexture;
-//			//sampler2D _BlurTexture;
-//			//sampler2D _PaperTexture;
-//			
-//			fixed4 frag (v2f i) : SV_Target
-//			{
-//				fixed3 worldNormal = normalize(i.worldNormal);
-//				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-//				float3 viewDir = normalize(i.viewDir);
-//
-//				fixed4 control = tex2D(_PaintTex, i.uv);
-//				fixed4 bg = tex2Dproj(_BackgroundTexture, i.grabPos);
-//				fixed4 color = tex2Dproj(_ColorTexture, i.grabPos);
-//				//fixed4 blur = tex2Dproj(_BlurTexture, i.grabPos);
-//				//fixed4 paper = tex2Dproj(_PaperTexture, i.grabPos);
-//
-//				//float4 c = color + (blur-color) * control[0];
-//
-//				//float4 Icb = color + (blur-color) * control[0];
-//				//float4 diff = blur - color;
-//				//float4 Ied = pow(Icb, 1 + control[1]*max(max(diff.x,diff.y),diff.z));
-//				//return c + (bg+paper) * (1-c[3]);
-//				return color;
-//			}
-//			ENDCG
-//		}//end of pass
 		
 
 	}
