@@ -61,8 +61,8 @@ Shader "Unlit/waterColor"
 
 	SubShader
 	{
-		Tags {"Queue"="Transparent" "RenderType"="Opaque" }
-		//Tags {"RenderType"="Opaque"}
+		//Tags {"Queue"="Transparent" "RenderType"="Opaque" }
+		Tags {"RenderType"="Opaque"}
 		LOD 100
 
 		GrabPass
@@ -73,7 +73,7 @@ Shader "Unlit/waterColor"
 		Pass
 		{
 			Tags { "LightMode"="ForwardBase" }
-
+			ZWrite On
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -101,6 +101,7 @@ Shader "Unlit/waterColor"
 				float3 viewDir : TEXCOORD3;
 				float turbulence: TEXCOORD4;
 				float weight: TEXCOORD5;
+
 				SHADOW_COORDS(6)
 			};
 			/*
@@ -150,7 +151,7 @@ Shader "Unlit/waterColor"
 				float3 worldLightDir = normalize(WorldSpaceLightDir(v.vertex));
 				float3 worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.weight = dot(worldLightDir, worldNormal);
-				TRANSFER_SHADOW(o)
+				//TRANSFER_SHADOW(o)
 
 				return o;
 			}
@@ -223,5 +224,6 @@ Shader "Unlit/waterColor"
 		
 
 	}
-	FallBack "Specular"
+	Fallback "Diffuse"
+	//FallBack "Specular"
 }
