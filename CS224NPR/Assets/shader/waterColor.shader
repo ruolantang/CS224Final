@@ -167,7 +167,7 @@ Shader "Unlit/waterColor"
 				float3 norm_normal = normalize(v.normal);
 				float3 norm_viewDir = normalize(viewDir);
 				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
-				o.vertex += float4(norm_normal*_bleedAmount, 0);
+				//o.vertex += float4(norm_normal*_bleedAmount, 0);
 				//o.vertex += v0;
 
 				//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
@@ -216,6 +216,7 @@ Shader "Unlit/waterColor"
 				float f = 1.f;
 				fixed4 noise = tex2D(_PaintTex, i.uv);
 				float Ctrl = i.turbulence;
+				//float Ctrl = noise[1];
 				float3 Ct;
 				if(Ctrl < 0.5){
 					Ct = pow(Cd, 3-(Ctrl*4));	
@@ -267,7 +268,7 @@ Shader "Unlit/waterColor"
 				float grey = (pencilTemp.x + pencilTemp.y + pencilTemp.z) / 3.0;
 
 				//return min(_greyScale*grey, 1.0) * fixed4(Cd,0);
-				return fixed4(Cd,0);
+				return fixed4(Cd,1);
 			}
 			ENDCG
 		}//end of pass
