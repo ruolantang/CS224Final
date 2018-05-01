@@ -249,16 +249,16 @@ Shader "Unlit/waterColor"
 					hatchColor = (weight - 3.0) * tex2D(_Hatch1, i.uv_pencil) + (3.0 + 1.0 - weight) * tex2D(_Hatch2, i.uv_pencil);
 				}
 				else if (weight > 2.0) {
-					hatchColor = (weight - 2.0) * tex2D(_Hatch2, i.uv_pencil) + (2.0 + 1.0 - weight) * tex2D(_Hatch3, i.uv_pencil);
+					hatchColor = (weight - 2.0) * tex2D(_Hatch2, i.uv_pencil) + (2.0 + 1.0 - weight) * tex2D(_Hatch2, i.uv_pencil);
 				}
 				else if (weight > 1.0) {
-					hatchColor = (weight - 1.0) * tex2D(_Hatch3, i.uv_pencil) + (1.0 + 1.0 - weight) * tex2D(_Hatch4, i.uv_pencil);
+					hatchColor = (weight - 1.0) * tex2D(_Hatch3, i.uv_pencil) + (1.0 + 1.0 - weight) * tex2D(_Hatch3, i.uv_pencil);
 				}
 				else if (weight > 0.0) {
-					hatchColor = (weight - 0.0) * tex2D(_Hatch4, i.uv_pencil) + (0.0 + 1.0 - weight) * tex2D(_Hatch5, i.uv_pencil);
+					hatchColor = (weight - 0.0) * tex2D(_Hatch4, i.uv_pencil) + (0.0 + 1.0 - weight) * tex2D(_Hatch3, i.uv_pencil);
 				}
 				else {
-					hatchColor = tex2D(_Hatch5, i.uv_pencil);
+					hatchColor = tex2D(_Hatch3, i.uv_pencil);
 				}
 
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
@@ -403,5 +403,5 @@ Shader "Unlit/waterColor"
 		
 
 	}
-	FallBack "Specular"
+	FallBack "VertexLit"
 }

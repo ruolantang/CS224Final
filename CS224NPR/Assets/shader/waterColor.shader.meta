@@ -1,13 +1,19 @@
 fileFormatVersion: 2
 guid: 484074971eec540c6b49a05e4e682429
-timeCreated: 1525028789
+timeCreated: 1525105869
 licenseType: Free
 ShaderImporter:
   externalObjects: {}
   defaultTextures:
   - _MainTex: {instanceID: 0}
-  - _PaintTex: {fileID: 2800000, guid: 9535fafa1a8a54d9ca31d5f0c2a707ec, type: 3}
+  - _PaintTex: {fileID: 2800000, guid: e38d7d321d62b5e4aa20f841dcec68e5, type: 3}
   - _PaperTex: {fileID: 2800000, guid: 337a1706bda0b45d5bdb8e622e39a49c, type: 3}
+  - _Hatch0: {fileID: 2800000, guid: ec81dafda2d08ca4393be4ee4401526d, type: 3}
+  - _Hatch1: {fileID: 2800000, guid: 8884713c88adc7b45bd33fe0971f85a9, type: 3}
+  - _Hatch2: {fileID: 2800000, guid: 5e63322e250b81f4792a4126b2337892, type: 3}
+  - _Hatch3: {fileID: 2800000, guid: e42ebff3407765f43b1a0c1794c6040e, type: 3}
+  - _Hatch4: {fileID: 2800000, guid: dc3f4914e0a5f68438bc801d9f12b1d5, type: 3}
+  - _Hatch5: {fileID: 2800000, guid: b065aa5b90ab2314c9507ebfebc689fb, type: 3}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
