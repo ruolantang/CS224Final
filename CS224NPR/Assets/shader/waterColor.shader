@@ -138,7 +138,7 @@ Shader "Unlit/waterColor"
 
 				//o.vertex = v.vertex + float4(normalize(v.normal), 0)*0.3*sin(_Time);
 
-				o.turbulence = 0.5 + pow(sin(_Time * s + o.vertex * 1000)*0.72, 7);
+				o.turbulence = 0.5 + pow(sin(_Time * s + o.vertex * 1000)*0.80, 5);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				o.vertex = UnityObjectToClipPos(o.vertex);
 				o.worldNormal = UnityObjectToWorldNormal(v.normal);
@@ -170,16 +170,20 @@ Shader "Unlit/waterColor"
 				fixed shadow = SHADOW_ATTENUATION(i);
 				//float3 C =  float3(0.76,0.37,0);
 				float3 C = ambient;
+				//return fixed4(diffuse*8,1);
 				//C = ambient+diffuse*shadow;
 
 				//Watercolor Reflectance Model
 				float da = 1.0f;//dilute area variable
 				float DA = (max(0,dot(worldNormal, worldLightDir)) + (da-1))/da;  //the area of effect
-				float c = 0.7f;
-				float d = 0.8f;
+				float c = 1.0f;
+				float d = 0.0f;
 				float3 Cp = float3(0.95,0.95,0.85);
+				//Cp = float3(1,0,0);
 				float3 Cc = C + float3(DA * c,DA * c,DA * c);//cangiante color
 				float3 Cd = d * DA * (Cp - Cc) + Cc;
+
+				//return float4(Cd,1);
 
 				//Pigment Turbulence
 				float f = 1.f;

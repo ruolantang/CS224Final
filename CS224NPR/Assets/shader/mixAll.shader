@@ -71,7 +71,7 @@
 
 				//float4 c = color + (blur-color) * control[0];
 
-				float4 Icb = color + (blur-color) * min(control[2]*2,1);
+				float4 Icb = color + (blur-color) * min(control[2]*1.5,1);
 				float4 diff = max(0,(blur2 - color) * 5);
 				float4 Ied = pow(Icb, 1 + control[2] * max(max(diff.x,diff.y),diff.z));
 				//Ied = Icb;

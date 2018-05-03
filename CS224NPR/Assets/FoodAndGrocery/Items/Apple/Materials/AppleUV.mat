@@ -113,13 +113,13 @@ Material:
     - _blackScale: 2
     - _bleedAmount: 0.001
     - _bluramount: 0.001
-    - _frequency: 2000
+    - _frequency: 1500
     - _greyScale: 0.5
     - _pp: 0.1
     - _sigma: 2
     - _size: 10
     - _speed: 1
-    - _tremorAmount: 0.001
+    - _tremorAmount: 0.012
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
