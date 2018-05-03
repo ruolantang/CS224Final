@@ -16,6 +16,7 @@ Shader "Unlit/waterColor"
 		_tremorAmount("tremor amount", range(0, 0.5)) = 0.01
 		_pp("pixel size of projection space", range(0.1,2.0)) = 0.1
 		_bleedAmount("bleed amount", range(0.001,10)) = 0.1
+		_scale("scale", range(0.0001,100000)) = 1
 
 		//outline shader
 		_EdgeThread("EdgeThread" , Range(0,0.5) ) = 0.1
@@ -52,6 +53,7 @@ Shader "Unlit/waterColor"
 	float _tremorAmount;
 	float _pp;
 	float _bleedAmount;
+	float _scale;
 	sampler2D _black;
 	float4 _black_ST;
 
@@ -126,7 +128,7 @@ Shader "Unlit/waterColor"
 				//hand tremor
 				float s = _speed;//speed
 				float f = _frequency;//frequency
-				float t = _tremorAmount;//tremor amount
+				float t = _tremorAmount * _scale;//tremor amount
 				float Pp = _pp;//pixel size of projection space
 				float a = 0.5f;
 				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;

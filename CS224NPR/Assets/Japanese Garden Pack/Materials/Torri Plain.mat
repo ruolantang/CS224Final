@@ -85,7 +85,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     - _blackScale: 2
-    - _bleedAmount: 0.01
+    - _bleedAmount: 0.001
     - _bluramount: 0.001
     - _frequency: 2000
     - _pp: 0.1

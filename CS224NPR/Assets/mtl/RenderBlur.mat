@@ -79,7 +79,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _bluramount: 0.003
+    - _bluramount: 0.0003
     - _sigma: 10
     - _size: 40
     m_Colors:

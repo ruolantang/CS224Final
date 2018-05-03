@@ -16,6 +16,7 @@ Shader "Unlit/waterColor"
 		_tremorAmount("tremor amount", range(0, 0.5)) = 0.01
 		_pp("pixel size of projection space", range(0.1,2.0)) = 0.1
 		_bleedAmount("bleed amount", range(0.001,10)) = 0.1
+		_scale("scale", range(0.0001,100000)) = 1
 	}
 
 
@@ -57,6 +58,7 @@ Shader "Unlit/waterColor"
 		float _tremorAmount;
 		float _pp;
 		float _bleedAmount;
+		float _scale;
 
 		v2f vert(appdata v)
 		{
@@ -67,14 +69,14 @@ Shader "Unlit/waterColor"
 			//hand tremor
 			float s = _speed;//speed
 			float f = _frequency;//frequency
-			float t = _tremorAmount;//tremor amount
+			float t = _tremorAmount * _scale;//tremor amount
 			float Pp = _pp;//pixel size of projection space
 			float a = 0.5f;
 			float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
 			float3 norm_normal = normalize(v.normal);
 			float3 norm_viewDir = normalize(viewDir);
 			o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
-			o.vertex += float4(norm_normal*_bleedAmount*5, 0);
+			o.vertex += float4(norm_normal*_bleedAmount*5*_scale, 0);
 
 			o.uv = TRANSFORM_TEX(v.uv, _PaintTex);
 			o.vertex = UnityObjectToClipPos(o.vertex);
