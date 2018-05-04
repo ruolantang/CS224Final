@@ -61,6 +61,9 @@
 				//R:distortion, G: Granulation, B: Darkening and bleeding, A: Turbulent and Pigment
 				float4 paper = tex2D(_paperTex, i.uv);
 				fixed4 control = tex2D(_ctrlTex, i.uv);
+				if (control[3] <= 0.51){
+					control = fixed4(0.4,0.4,0.4,1);
+				}
 
 				//fixed4 bg = tex2Dproj(_BackgroundTexture, i.grabPos);
 				fixed4 color = tex2D(_beforeTex, i.uv);
@@ -72,6 +75,7 @@
 				//float4 c = color + (blur-color) * control[0];
 
 				float4 Icb = color + (blur-color) * min(control[2]*1.5,1);
+				//Icb = color + (blur-color) * 0.5;
 				float4 diff = max(0,(blur2 - color) * 5);
 				float4 Ied = pow(Icb, 1 + control[2] * max(max(diff.x,diff.y),diff.z));
 				//Ied = Icb;

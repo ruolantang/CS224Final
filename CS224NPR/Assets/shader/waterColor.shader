@@ -132,7 +132,7 @@ Shader "Unlit/waterColor"
 				float4 v0 = sin(_Time * s + o.vertex * f) * t * Pp;
 				float3 norm_normal = normalize(v.normal);
 				float3 norm_viewDir = normalize(viewDir);
-				o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
+				//o.vertex += v0 * (1 - a * dot(norm_normal, norm_viewDir));// / unity_ObjectToWorld[0][0];
 				//o.vertex += float4(norm_normal*_bleedAmount, 0);
 				//o.vertex += v0;
 
@@ -169,17 +169,18 @@ Shader "Unlit/waterColor"
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 				fixed shadow = SHADOW_ATTENUATION(i);
 				//float3 C =  float3(0.76,0.37,0);
-				float3 C = ambient;
-				//return fixed4(diffuse*8,1);
+				float3 C = ambient*1.55;
+				//return fixed4(C,0);
+				//return fixed4(diffuse+ambient,1);
 				//C = ambient+diffuse*shadow;
 
 				//Watercolor Reflectance Model
 				float da = 1.0f;//dilute area variable
-				float DA = (max(0,dot(worldNormal, worldLightDir)) + (da-1))/da;  //the area of effect
-				float c = 1.0f;
-				float d = 0.0f;
+				float DA = (max(0,dot(worldNormal, worldLightDir)) + (da-1.0f))/da;  //the area of effect
+				float c = 0.7f;
+				float d = 0.8f;
 				float3 Cp = float3(0.95,0.95,0.85);
-				//Cp = float3(1,0,0);
+				//Cp = float3(1,1,0);
 				float3 Cc = C + float3(DA * c,DA * c,DA * c);//cangiante color
 				float3 Cd = d * DA * (Cp - Cc) + Cc;
 
@@ -187,18 +188,22 @@ Shader "Unlit/waterColor"
 
 				//Pigment Turbulence
 				float f = 1.f;
-				fixed4 noise = tex2D(_PaintTex, i.uv);
-				float Ctrl = i.turbulence;
+				fixed4 noise = tex2D(_PaintTex, i.uv/2);
+				//float Ctrl = i.turbulence;
+				float Ctrl = 0.5 + (noise[0]-0.5)*1.2;
+				//Ctrl = 0.98;
+				//return fixed4(Ctrl, Ctrl, Ctrl, 0);
+				//Ctrl = 0.5;
 				//float Ctrl = noise[1];
 				float3 Ct;
+				//Ctrl = 0.5;
 				if(Ctrl < 0.5){
 					Ct = pow(Cd, 3-(Ctrl*4));	
 				} else{
 					Ct = (Ctrl - 0.5) * 2 * (Cp - Cd) + Cd;
 				}
 
-				Cd = Cd + (Cp - Cd) * Ct;
-
+				//Cd = Cd + (Cp - Cd) * Ct;
 				//Cd = Cd + diffuse * shadow;
 				//Cd = max(0,Ct);
 
@@ -223,7 +228,7 @@ Shader "Unlit/waterColor"
 
 				//return outline;
 
-				return fixed4(Cd,1);
+				return fixed4(Ct,1);
 			}
 			ENDCG
 		}//end of pass
